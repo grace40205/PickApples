@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2002
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SpaceOut", "SpaceOut.vcxproj", "{824EC981-12EF-432C-AAAE-0D16EBA0706A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{824EC981-12EF-432C-AAAE-0D16EBA0706A}.Debug|x86.ActiveCfg = Debug|Win32
+		{824EC981-12EF-432C-AAAE-0D16EBA0706A}.Debug|x86.Build.0 = Debug|Win32
+		{824EC981-12EF-432C-AAAE-0D16EBA0706A}.Release|x86.ActiveCfg = Release|Win32
+		{824EC981-12EF-432C-AAAE-0D16EBA0706A}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15B242A3-12FB-4075-AC53-C83DC83C2D9B}
+	EndGlobalSection
+EndGlobal
