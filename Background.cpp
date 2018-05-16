@@ -17,6 +17,7 @@ Background::Background(int iWidth, int iHeight, COLORREF crColor)
   m_iWidth = iWidth;
   m_iHeight = iHeight;
   m_crColor = crColor;
+  m_pImage = NULL;
   m_pBitmap = NULL;
 }
 
@@ -25,8 +26,19 @@ Background::Background(Bitmap* pBitmap)
   // Initialize the member variables
   m_crColor = 0;
   m_pBitmap = pBitmap;
+  m_pImage = NULL;
   m_iWidth = pBitmap->GetWidth();
   m_iHeight = pBitmap->GetHeight();
+}
+
+Background::Background(Image * pImage)
+{
+	// Initialize the member variables
+	m_crColor = 0;
+	m_pBitmap = NULL;
+	m_pImage = pImage;
+	m_iWidth = pImage->GetWidth();
+	m_iHeight = pImage->GetHeight();
 }
 
 Background::~Background()
@@ -44,15 +56,17 @@ void Background::Update()
 void Background::Draw(HDC hDC)
 {
   // Draw the background
-  if (m_pBitmap != NULL)
-    m_pBitmap->Draw(hDC, 0, 0);
-  else
-  {
-    RECT    rect = { 0, 0, m_iWidth, m_iHeight };
-    HBRUSH  hBrush = CreateSolidBrush(m_crColor);
-    FillRect(hDC, &rect, hBrush);
-    DeleteObject(hBrush);
-  }
+	if (m_pBitmap != NULL)
+		m_pBitmap->Draw(hDC, 0, 0);
+	else if (m_pImage != NULL)
+		m_pImage->Draw(hDC, 0, 0);
+	else
+	{
+		RECT    rect = { 0, 0, m_iWidth, m_iHeight };
+		HBRUSH  hBrush = CreateSolidBrush(m_crColor);
+		FillRect(hDC, &rect, hBrush);
+		DeleteObject(hBrush);
+	}
 }
 
 //-----------------------------------------------------------------

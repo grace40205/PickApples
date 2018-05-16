@@ -39,14 +39,13 @@ void GameStart(HWND hWindow)
     g_pGame->GetWidth(), g_pGame->GetHeight());
   SelectObject(g_hOffscreenDC, g_hOffscreenBitmap);
 
-  // Create and load the bitmaps
+  // Create and load the images
   HDC hDC = GetDC(hWindow);
-  //g_pDesertBitmap = new Bitmap(hDC, IDB_DESERT, g_hInstance);
   g_pDesertBitmap = new Image(hDC, TEXT("Res\\Desert.bmp"));
-  g_pCarBitmap = new Image(hDC, TEXT("Res\\Car.bmp"));
+  g_pPlayerImage = new Image(hDC, TEXT("Res\\Car.bmp"));
   g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
   g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
-  g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.bmp"));
+  g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.png"));
   g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
   g_pJellyBitmap = new Image(hDC, TEXT("Res\\Jelly.bmp"));
   g_pJMissileBitmap = new Image(hDC, TEXT("Res\\JMissile.bmp"));
@@ -55,9 +54,10 @@ void GameStart(HWND hWindow)
   g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
   g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
   g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
+  g_pSkyBackgroundImage = new Image(hDC, TEXT("Res\\skybg.jpg"));
 
   // Create the starry background
-  g_pBackground = new StarryBackground(600, 450);
+  g_pBackground = new Background(g_pSkyBackgroundImage);
 
   // Play the background music
   g_pGame->PlayMIDISong(TEXT("Music.mid"));
@@ -77,7 +77,7 @@ void GameEnd()
 
   // Cleanup the bitmaps
   delete g_pDesertBitmap;
-  delete g_pCarBitmap;
+  delete g_pPlayerImage;
   delete g_pSmCarBitmap;
   delete g_pMissileBitmap;
   delete g_pBlobboBitmap;
@@ -176,18 +176,18 @@ void HandleKeys()
   if (!g_bGameOver)
   {
     // Move the car based upon left/right key presses
-    POINT ptVelocity = g_pCarSprite->GetVelocity();
+    POINT ptVelocity = g_pPlayerSprite->GetVelocity();
     if (GetAsyncKeyState(VK_LEFT) < 0)
     {
       // Move left
       ptVelocity.x = max(ptVelocity.x - 1, -4);
-      g_pCarSprite->SetVelocity(ptVelocity);
+      g_pPlayerSprite->SetVelocity(ptVelocity);
     }
     else if (GetAsyncKeyState(VK_RIGHT) < 0)
     {
       // Move right
       ptVelocity.x = min(ptVelocity.x + 2, 6);
-      g_pCarSprite->SetVelocity(ptVelocity);
+      g_pPlayerSprite->SetVelocity(ptVelocity);
     }
 
     // Fire missiles based upon spacebar presses
@@ -195,7 +195,7 @@ void HandleKeys()
     {
       // Create a new missile sprite
       RECT  rcBounds = { 0, 0, 600, 450 };
-      RECT  rcPos = g_pCarSprite->GetPosition();
+      RECT  rcPos = g_pPlayerSprite->GetPosition();
       Sprite* pSprite = new Sprite(g_pMissileBitmap, rcBounds, BA_DIE);
       pSprite->SetPosition(rcPos.left + 15, 400);
       pSprite->SetVelocity(0, -7);
@@ -268,9 +268,9 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
   }
 
   // See if an alien missile has collided with the car
-  if ((pHitter == g_pCarBitmap && (pHittee == g_pBMissileBitmap ||
+  if ((pHitter == g_pPlayerImage && (pHittee == g_pBMissileBitmap ||
     pHittee == g_pJMissileBitmap || pHittee == g_pTMissileBitmap)) ||
-    (pHittee == g_pCarBitmap && (pHitter == g_pBMissileBitmap ||
+    (pHittee == g_pPlayerImage && (pHitter == g_pBMissileBitmap ||
     pHitter == g_pJMissileBitmap || pHitter == g_pTMissileBitmap)))
   {
     // Play the large explosion sound
@@ -278,7 +278,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
       SND_RESOURCE);
 
     // Kill the missile sprite
-    if (pHitter == g_pCarBitmap)
+    if (pHitter == g_pPlayerImage)
       pSpriteHittee->Kill();
     else
       pSpriteHitter->Kill();
@@ -286,7 +286,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     // Create a large explosion sprite at the car's position
     RECT rcBounds = { 0, 0, 600, 480 };
     RECT rcPos;
-    if (pHitter == g_pCarBitmap)
+    if (pHitter == g_pPlayerImage)
       rcPos = pSpriteHitter->GetPosition();
     else
       rcPos = pSpriteHittee->GetPosition();
@@ -296,7 +296,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     g_pGame->AddSprite(pSprite);
 
     // Move the car back to the start
-    g_pCarSprite->SetPosition(300, 405);
+    g_pPlayerSprite->SetPosition(300, 405);
 
     // See if the game is over
     if (--g_iNumLives == 0)
@@ -342,9 +342,9 @@ void NewGame()
 
   // Create the car sprite
   RECT rcBounds = { 0, 0, 600, 450 };
-  g_pCarSprite = new Sprite(g_pCarBitmap, rcBounds, BA_WRAP);
-  g_pCarSprite->SetPosition(300, 405);
-  g_pGame->AddSprite(g_pCarSprite);
+  g_pPlayerSprite = new Sprite(g_pPlayerImage, rcBounds, BA_WRAP);
+  g_pPlayerSprite->SetPosition(300, 405);
+  g_pGame->AddSprite(g_pPlayerSprite);
 
   // Initialize the game variables
   g_iFireInputDelay = 0;

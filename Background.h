@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------
 #include <windows.h>
 #include "Bitmap.h"
+#include "Image.h"
 
 //-----------------------------------------------------------------
 // Background Class
@@ -21,11 +22,14 @@ protected:
   int       m_iWidth, m_iHeight;
   COLORREF  m_crColor;
   Bitmap*   m_pBitmap;
+  Image*	m_pImage;
 
 public:
   // Constructor(s)/Destructor
           Background(int iWidth, int iHeight, COLORREF crColor);
           Background(Bitmap* pBitmap);
+          Background(Image* pImage);
+
   virtual ~Background();
 
   // General Methods
