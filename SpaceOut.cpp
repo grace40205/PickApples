@@ -43,18 +43,18 @@ void GameStart(HWND hWindow)
   HDC hDC = GetDC(hWindow);
   //g_pDesertBitmap = new Bitmap(hDC, IDB_DESERT, g_hInstance);
   g_pDesertBitmap = new Image(hDC, TEXT("Res\\Desert.bmp"));
-  g_pCarBitmap = new Bitmap(hDC, IDB_CAR, g_hInstance);
-  g_pSmCarBitmap = new Bitmap(hDC, IDB_SMCAR, g_hInstance);
-  g_pMissileBitmap = new Bitmap(hDC, IDB_MISSILE, g_hInstance);
-  g_pBlobboBitmap = new Bitmap(hDC, IDB_BLOBBO, g_hInstance);
-  g_pBMissileBitmap = new Bitmap(hDC, IDB_BMISSILE, g_hInstance);
-  g_pJellyBitmap = new Bitmap(hDC, IDB_JELLY, g_hInstance);
-  g_pJMissileBitmap = new Bitmap(hDC, IDB_JMISSILE, g_hInstance);
-  g_pTimmyBitmap = new Bitmap(hDC, IDB_TIMMY, g_hInstance);
-  g_pTMissileBitmap = new Bitmap(hDC, IDB_TMISSILE, g_hInstance);
-  g_pSmExplosionBitmap = new Bitmap(hDC, IDB_SMEXPLOSION, g_hInstance);
-  g_pLgExplosionBitmap = new Bitmap(hDC, IDB_LGEXPLOSION, g_hInstance);
-  g_pGameOverBitmap = new Bitmap(hDC, IDB_GAMEOVER, g_hInstance);
+  g_pCarBitmap = new Image(hDC, TEXT("Res\\Car.bmp"));
+  g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
+  g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
+  g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.bmp"));
+  g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
+  g_pJellyBitmap = new Image(hDC, TEXT("Res\\Jelly.bmp"));
+  g_pJMissileBitmap = new Image(hDC, TEXT("Res\\JMissile.bmp"));
+  g_pTimmyBitmap = new Image(hDC, TEXT("Res\\Timmy.bmp"));
+  g_pTMissileBitmap = new Image(hDC, TEXT("Res\\TMissile.bmp"));
+  g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
+  g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
+  g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
 
   // Create the starry background
   g_pBackground = new StarryBackground(600, 450);
@@ -134,11 +134,11 @@ void GamePaint(HDC hDC)
   // Draw the number of remaining lives (cars)
   for (int i = 0; i < g_iNumLives; i++)
     g_pSmCarBitmap->Draw(hDC, 520 + (g_pSmCarBitmap->GetWidth() * i),
-      10, TRUE);
+      10);
 
   // Draw the game over message, if necessary
   if (g_bGameOver)
-    g_pGameOverBitmap->Draw(hDC, 190, 149, TRUE);
+    g_pGameOverBitmap->Draw(hDC, 190, 149);
 }
 
 void GameCycle()
@@ -235,8 +235,8 @@ void HandleJoystick(JOYSTATE jsJoystickState)
 BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 {
   // See if a player missile and an alien have collided
-  Bitmap* pHitter = pSpriteHitter->GetBitmap();
-  Bitmap* pHittee = pSpriteHittee->GetBitmap();
+  Image* pHitter = pSpriteHitter->GetImage();
+  Image* pHittee = pSpriteHittee->GetImage();
   if ((pHitter == g_pMissileBitmap && (pHittee == g_pBlobboBitmap ||
     pHittee == g_pJellyBitmap || pHittee == g_pTimmyBitmap)) ||
     (pHittee == g_pMissileBitmap && (pHitter == g_pBlobboBitmap ||
@@ -314,9 +314,9 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 void SpriteDying(Sprite* pSpriteDying)
 {
   // See if an alien missile sprite is dying
-  if (pSpriteDying->GetBitmap() == g_pBMissileBitmap ||
-    pSpriteDying->GetBitmap() == g_pJMissileBitmap ||
-    pSpriteDying->GetBitmap() == g_pTMissileBitmap)
+  if (pSpriteDying->GetImage() == g_pBMissileBitmap ||
+    pSpriteDying->GetImage() == g_pJMissileBitmap ||
+    pSpriteDying->GetImage() == g_pTMissileBitmap)
   {
     // Play the small explosion sound
     PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |

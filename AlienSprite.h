@@ -20,6 +20,8 @@ public:
   // Constructor(s)/Destructor
           AlienSprite(Bitmap* pBitmap, RECT& rcBounds,
             BOUNDSACTION baBoundsAction = BA_STOP);
+		  AlienSprite(Image* pImage, RECT& rcBounds,
+			  BOUNDSACTION baBoundsAction = BA_STOP);
   virtual ~AlienSprite();
 
   // General Methods

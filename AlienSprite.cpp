@@ -11,12 +11,12 @@
 //-----------------------------------------------------------------
 // External Global Variables
 //-----------------------------------------------------------------
-extern Bitmap* g_pBlobboBitmap;
-extern Bitmap* g_pBMissileBitmap;
-extern Bitmap* g_pJellyBitmap;
-extern Bitmap* g_pJMissileBitmap;
-extern Bitmap* g_pTimmyBitmap;
-extern Bitmap* g_pTMissileBitmap;
+extern Image* g_pBlobboBitmap;
+extern Image* g_pBMissileBitmap;
+extern Image* g_pJellyBitmap;
+extern Image* g_pJMissileBitmap;
+extern Image* g_pTimmyBitmap;
+extern Image* g_pTMissileBitmap;
 extern int     g_iDifficulty;
 
 //-----------------------------------------------------------------
@@ -25,6 +25,12 @@ extern int     g_iDifficulty;
 AlienSprite::AlienSprite(Bitmap* pBitmap, RECT& rcBounds,
   BOUNDSACTION baBoundsAction) : Sprite(pBitmap, rcBounds,
   baBoundsAction)
+{
+}
+
+AlienSprite::AlienSprite(Image * pImage, RECT & rcBounds, 
+  BOUNDSACTION baBoundsAction): Sprite(pImage, rcBounds,
+	  baBoundsAction)
 {
 }
 
@@ -54,13 +60,13 @@ Sprite* AlienSprite::AddSprite()
   RECT    rcBounds = { 0, 0, 640, 410 };
   RECT    rcPos = GetPosition();
   Sprite* pSprite = NULL;
-  if (GetBitmap() == g_pBlobboBitmap)
+  if (GetImage() == g_pBlobboBitmap)
   {
     // Blobbo missile
     pSprite = new Sprite(g_pBMissileBitmap, rcBounds, BA_DIE);
     pSprite->SetVelocity(0, 7);
   }
-  else if (GetBitmap() == g_pJellyBitmap)
+  else if (GetImage() == g_pJellyBitmap)
   {
     // Jelly missile
     pSprite = new Sprite(g_pJMissileBitmap, rcBounds, BA_DIE);
