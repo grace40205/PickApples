@@ -41,7 +41,7 @@ void GameStart(HWND hWindow)
 
   // Create and load the images
   HDC hDC = GetDC(hWindow);
-  g_pDesertBitmap = new Image(hDC, TEXT("Res\\Desert.bmp"));
+
   g_pPlayerImage = new Image(hDC, TEXT("Res\\Car.bmp"));
   g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
   g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
@@ -76,7 +76,6 @@ void GameEnd()
   DeleteDC(g_hOffscreenDC);  
 
   // Cleanup the bitmaps
-  delete g_pDesertBitmap;
   delete g_pPlayerImage;
   delete g_pSmCarBitmap;
   delete g_pMissileBitmap;
@@ -117,8 +116,6 @@ void GamePaint(HDC hDC)
   // Draw the background
   g_pBackground->Draw(hDC);
 
-  // Draw the desert bitmap
-  g_pDesertBitmap->Draw(hDC, 0, 371);
 
   // Draw the sprites
   g_pGame->DrawSprites(hDC);

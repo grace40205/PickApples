@@ -25,7 +25,6 @@ GameEngine*       g_pGame;
 HDC               g_hOffscreenDC;
 HBITMAP           g_hOffscreenBitmap;
 
-Image*			  g_pDesertBitmap;
 Image*			  g_pSmCarBitmap;
 Image*            g_pMissileBitmap;
 Image*           g_pBlobboBitmap;
