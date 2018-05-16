@@ -54,16 +54,56 @@ void GameStart(HWND hWindow)
   g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
   g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
   g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
-  g_pSkyBackgroundImage = new Image(hDC, TEXT("Res\\skybg.jpg"));
 
-  // Create the starry background
-  g_pBackground = new Background(g_pSkyBackgroundImage);
+  g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\OptionBackground.jpg"));
+  g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\GameBackground.jpg"));
+  g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\SettingsBackground.jpg"));
+  g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\HelpBackground.jpg"));
+  g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\RankBackground.jpg"));
+
+  
+  // 默认情况下进入游戏选择界面
+  g_uiState = UI_OPTION;
+  NewOption(hDC);
+
+  // 这里应该读取xml文件获得开始游戏的模式：新游戏，上一个游戏
+  g_gaState = GA_NEW;
+
+  // Create the Game Option UI background
+  g_pBackground = new Background(g_pOpitonBackgroundImage);
 
   // Play the background music
   g_pGame->PlayMIDISong(TEXT("Music.mid"));
 
   // Start the game
-  NewGame();
+  //NewGame();
+}
+
+void NewOption(HDC hDC) {
+	g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
+	g_pGameSprite = new Sprite(g_pGameImage);
+	g_pGameSprite->SetPosition(200, 100);
+	g_pGame->AddSprite(g_pGameSprite);
+
+	g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
+	g_pSettingsSprite = new Sprite(g_pSettingsImage);
+	g_pSettingsSprite->SetPosition(200, 140);
+	g_pGame->AddSprite(g_pSettingsSprite);
+
+	g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
+	g_pHelpSprite = new Sprite(g_pHelpImage);
+	g_pHelpSprite->SetPosition(200, 180);
+	g_pGame->AddSprite(g_pHelpSprite);
+
+	g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
+	g_pRankSprite = new Sprite(g_pRankImage);
+	g_pRankSprite->SetPosition(200, 220);
+	g_pGame->AddSprite(g_pRankSprite);
+
+	g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
+	g_pExitSprite = new Sprite(g_pExitImage);
+	g_pExitSprite->SetPosition(200, 260);
+	g_pGame->AddSprite(g_pExitSprite);
 }
 
 void GameEnd()
@@ -113,34 +153,65 @@ void GameDeactivate(HWND hWindow)
 
 void GamePaint(HDC hDC)
 {
-  // Draw the background
-  g_pBackground->Draw(hDC);
+	delete g_pBackground;
+
+	//根据g_uiState的值决定绘制哪个界面
+	if (g_uiState == UI_OPTION)
+	{
+		g_pBackground = new Background(g_pOpitonBackgroundImage);
+		g_pBackground->Draw(hDC);
+
+		// Draw the sprites
+		g_pGame->DrawSprites(hDC);
+	}
+	else if (g_uiState == UI_GAME)
+	{
+		// Draw the background
+		g_pBackground = new Background(g_pGameBackgroundImage);
+		g_pBackground->Draw(hDC);
 
 
-  // Draw the sprites
-  g_pGame->DrawSprites(hDC);
+		// Draw the sprites
+		g_pGame->DrawSprites(hDC);
 
-  // Draw the score
-  TCHAR szText[64];
-  RECT  rect = { 460, 0, 510, 30 };
-  wsprintf(szText, "%d", g_iScore);
-  SetBkMode(hDC, TRANSPARENT);
-  SetTextColor(hDC, RGB(255, 255, 255));
-  DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
+		// Draw the score
+		TCHAR szText[64];
+		RECT  rect = { 460, 0, 510, 30 };
+		wsprintf(szText, "%d", g_iScore);
+		SetBkMode(hDC, TRANSPARENT);
+		SetTextColor(hDC, RGB(255, 255, 255));
+		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
 
-  // Draw the number of remaining lives (cars)
-  for (int i = 0; i < g_iNumLives; i++)
-    g_pSmCarBitmap->Draw(hDC, 520 + (g_pSmCarBitmap->GetWidth() * i),
-      10);
+		// Draw the number of remaining lives (cars)
+		for (int i = 0; i < g_iNumLives; i++)
+			g_pSmCarBitmap->Draw(hDC, 520 + (g_pSmCarBitmap->GetWidth() * i),
+				10);
 
-  // Draw the game over message, if necessary
-  if (g_bGameOver)
-    g_pGameOverBitmap->Draw(hDC, 190, 149);
+		// Draw the game over message, if necessary
+		if (g_bGameOver)
+			g_pGameOverBitmap->Draw(hDC, 190, 149);
+	}
+	else if (g_uiState == UI_SETTINGS)
+	{
+
+	}
+	else if (g_uiState == UI_HELP)
+	{
+
+	}
+	else if (g_uiState == UI_RANK)
+	{
+
+	}
+	else if (g_uiState == UI_END)
+	{
+
+	}
 }
 
 void GameCycle()
 {
-  if (!g_bGameOver)
+  if (g_uiState == UI_GAME && !g_bGameOver)
   {
     // Randomly add aliens
     if ((rand() % g_iDifficulty) == 0)
@@ -170,7 +241,7 @@ void GameCycle()
 
 void HandleKeys()
 {
-  if (!g_bGameOver)
+  if (g_uiState == UI_GAME && !g_bGameOver)
   {
     // Move the car based upon left/right key presses
     POINT ptVelocity = g_pPlayerSprite->GetVelocity();
@@ -215,6 +286,7 @@ void HandleKeys()
 
 void MouseButtonDown(int x, int y, BOOL bLeft)
 {
+
 }
 
 void MouseButtonUp(int x, int y, BOOL bLeft)
