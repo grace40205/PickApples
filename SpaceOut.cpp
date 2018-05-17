@@ -57,9 +57,9 @@ void GameStart(HWND hWindow)
 
   g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\main_bg.png"));
   g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\game_bg.png"));
-  g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\SettingsBackground.jpg"));
-  g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\HelpBackground.jpg"));
-  g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\RankBackground.jpg"));
+  g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\settings_alert.png"));
+  g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\help_alert.png"));
+  g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\ranking_list_alert.png"));
 
   
   // 默认情况下进入游戏选择界面
