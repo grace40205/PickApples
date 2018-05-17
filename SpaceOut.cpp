@@ -15,7 +15,7 @@ BOOL GameInitialize(HINSTANCE hInstance)
 {
   // Create the game engine
   g_pGame = new GameEngine(hInstance, TEXT("Space Out"),
-    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, 1920, 1080);
+    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, 800, 600);
   if (g_pGame == NULL)
     return FALSE;
 
@@ -235,7 +235,7 @@ void GameCycle()
   {
     // Randomly add aliens
     if ((rand() % g_iDifficulty) == 0)
-      AddAlien();
+      AddFalls();
 
     // Update the background
     g_pBackground->Update();
@@ -310,7 +310,7 @@ void HandleKeys()
     if ((++g_iFireInputDelay > 6) && GetAsyncKeyState(VK_SPACE) < 0)
     {
       // Create a new missile sprite
-      RECT  rcBounds = { 0, 0, 1920, 1080 };
+      RECT  rcBounds = { 0, 0, 800, 600 };
       RECT  rcPos = g_pGirlSprite->GetPosition();
       Sprite* pSprite = new Sprite(g_pMissileBitmap, rcBounds, BA_DIE);
       pSprite->SetPosition(rcPos.left + 15, 400);
@@ -414,7 +414,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     pSpriteHittee->Kill();
 
     // Create a large explosion sprite at the alien's position
-    RECT rcBounds = { 0, 0, 1920, 1080 };
+    RECT rcBounds = { 0, 0, 800, 600 };
     RECT rcPos;
     if (pHitter == g_pMissileBitmap)
       rcPos = pSpriteHittee->GetPosition();
@@ -447,7 +447,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
       pSpriteHitter->Kill();
 
     // Create a large explosion sprite at the car's position
-    RECT rcBounds = { 0, 0, 1920, 480 };
+    RECT rcBounds = { 0, 0, 800, 480 };
     RECT rcPos;
     if (pHitter == g_pGirlImage)
       rcPos = pSpriteHitter->GetPosition();
@@ -486,7 +486,7 @@ void SpriteDying(Sprite* pSpriteDying)
       SND_RESOURCE | SND_NOSTOP);
 
     // Create a small explosion sprite at the missile's position
-    RECT rcBounds = { 0, 0, 1920, 1080 };
+    RECT rcBounds = { 0, 0, 800, 600 };
     RECT rcPos = pSpriteDying->GetPosition();
     Sprite* pSprite = new Sprite(g_pSmExplosionBitmap, rcBounds);
     pSprite->SetNumFrames(8, TRUE);
@@ -503,10 +503,21 @@ void NewGame()
   // Clear the sprites
   g_pGame->CleanupSprites();
 
+  // 加载苹果 石头的图片资源
+  if (g_pAppleImage == NULL || g_pStoneImage == NULL)
+  {
+	  // Obtain a device context for repainting the game
+	  HWND  hWindow = g_pGame->GetWindow();
+	  HDC   hDC = GetDC(hWindow);
+
+	  g_pAppleImage = new Image(hDC, TEXT("Res\\game_apple.png"));
+	  g_pStoneImage = new Image(hDC, TEXT("Res\\game_stone.png"));
+  }
+
   // Create the car sprite
-  RECT rcBounds = { 0, 0, 1920, 1080 };
+  RECT rcBounds = { 0, 0, 800, 600 };
   g_pGirlSprite = new Sprite(g_pGirlImage, rcBounds, BA_WRAP);
-  g_pGirlSprite->SetPosition(300, 750);
+  g_pGirlSprite->SetPosition(300, 350);
   g_pGame->AddSprite(g_pGirlSprite);
 
   // Initialize the game variables
@@ -520,36 +531,30 @@ void NewGame()
   g_pGame->PlayMIDISong();
 }
 
-void AddAlien()
+void AddFalls()
 {
   // Create a new random alien sprite
-  RECT          rcBounds = { 0, 0, 1920, 410 };
-  AlienSprite*  pSprite;
+  RECT          rcBounds = { 0, 0, 800, 600 };
+  Sprite*  pSprite;
   switch(rand() % 3)
   {
   case 0:
-    // Blobbo
-    pSprite = new AlienSprite(g_pBlobboBitmap, rcBounds, BA_BOUNCE);
-    pSprite->SetNumFrames(8);
-    pSprite->SetPosition(((rand() % 2) == 0) ? 0 : 1920, rand() % 370);
-    pSprite->SetVelocity((rand() % 7) - 2, (rand() % 7) - 2);
-    break;
   case 1:
-    // Jelly
-    pSprite = new AlienSprite(g_pJellyBitmap, rcBounds, BA_BOUNCE);
+    // Apple
+    pSprite = new Sprite(g_pAppleImage, rcBounds, BA_BOUNCE);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 1920, rand() % 370);
+    pSprite->SetPosition(rand() % 800, rand() % 370);
     pSprite->SetVelocity((rand() % 5) - 2, (rand() % 5) + 3);
     break;
   case 2:
-    // Timmy
-    pSprite = new AlienSprite(g_pTimmyBitmap, rcBounds, BA_WRAP);
+    // Stone
+    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_BOUNCE);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 1920, rand() % 370);
+    pSprite->SetPosition(rand() % 800, rand() % 370);
     pSprite->SetVelocity((rand() % 7) + 3, 0);
     break;
   }
 
-  // Add the alien sprite
+  // Add the sprite
   g_pGame->AddSprite(pSprite);
 }

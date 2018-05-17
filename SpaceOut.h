@@ -69,7 +69,7 @@ Sprite*			g_pExitSprite;
 //”Œœ∑≥°æ∞
 Image*			g_pGameBackgroundImage;
 Image*			g_pAppleImage;
-Image*			g_pBombImage;
+Image*			g_pStoneImage;
 Image*			g_pGirlImage;
 Sprite*         g_pGirlSprite;
 Image*			g_pPauseImage;
@@ -108,4 +108,4 @@ BOOL            g_bGameOver;
 void NewGame();
 void NewOption(HDC hDC);
 void RemoveOption();
-void AddAlien();
+void AddFalls();
