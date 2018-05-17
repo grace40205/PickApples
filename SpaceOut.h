@@ -21,9 +21,9 @@
 // Custom Data Types
 //-----------------------------------------------------------------
 typedef WORD        GAMESTATE;
-const GAMESTATE  GA_NEW			= 0x0000L,
-				 GA_DIE			= 0x0001L,
-				 GA_CONTINUE	= 0x0002L;
+const GAMESTATE  GA_NEW			= 0x0000L, //开始新游戏
+				 GA_DIE			= 0x0001L, //游戏失败
+				 GA_CONTINUE	= 0x0002L; //上一次游戏
 
 typedef WORD        UISTATE;
 const UISTATE  UI_OPTION		= 0x0000L,
@@ -70,8 +70,8 @@ Sprite*			g_pExitSprite;
 Image*			g_pGameBackgroundImage;
 Image*			g_pAppleImage;
 Image*			g_pBombImage;
-Image*			g_pPlayerImage;
-Sprite*         g_pPlayerSprite;
+Image*			g_pGirlImage;
+Sprite*         g_pGirlSprite;
 Image*			g_pPauseImage;
 Image*			g_pSoundImage;
 //游戏结束/暂停界面
@@ -93,8 +93,9 @@ Image*			g_pRankBackgroundImage;
 
 Background*		g_pBackground;
 
-//GamePaint中决定绘制哪个界面
+//决定绘制哪个界面
 UISTATE			g_uiState;
+//决定游戏开始模式
 GAMESTATE		g_gaState;
 
 int             g_iFireInputDelay;
