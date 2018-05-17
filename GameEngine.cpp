@@ -249,6 +249,11 @@ void GameEngine::ErrorQuit(LPTSTR szErrorMsg)
   PostQuitMessage(0);
 }
 
+void GameEngine::Quit()
+{
+	PostQuitMessage(0);
+}
+
 BOOL GameEngine::InitJoystick()
 {
   // Make sure joystick driver is present

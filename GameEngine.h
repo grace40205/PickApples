@@ -87,6 +87,7 @@ public:
   LRESULT             HandleEvent(HWND hWindow, UINT msg, WPARAM wParam,
                         LPARAM lParam);
   void                ErrorQuit(LPTSTR szErrorMsg);
+  void				  Quit();
   BOOL                InitJoystick();
   void                CaptureJoystick();
   void                ReleaseJoystick();

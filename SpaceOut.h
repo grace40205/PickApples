@@ -31,7 +31,8 @@ const UISTATE  UI_OPTION		= 0x0000L,
 			   UI_SETTINGS		= 0x0002L,
 			   UI_HELP			= 0x0003L,
 			   UI_RANK			= 0x0004L,
-			   UI_END			= 0x0005L; //游戏暂停、结束界面
+			   UI_END			= 0x0005L, //游戏暂停、结束界面
+			   UI_EXIT			= 0X0006L;
 
 //-----------------------------------------------------------------
 // Global Variables
@@ -105,4 +106,5 @@ BOOL            g_bGameOver;
 //-----------------------------------------------------------------
 void NewGame();
 void NewOption(HDC hDC);
+void RemoveOption();
 void AddAlien();
