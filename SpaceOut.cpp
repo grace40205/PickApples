@@ -74,8 +74,7 @@ void GameStart(HWND hWindow)
   // Play the background music
   g_pGame->PlayMIDISong(TEXT("Music.mid"));
 
-  // Start the game
-  //NewGame();
+  
   NewOption(hDC);
 }
 
