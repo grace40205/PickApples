@@ -74,7 +74,8 @@ void GameStart(HWND hWindow)
   g_bMusicOn = true;
 
   // Play the background music
-  g_pGame->PlayMIDISong(TEXT("Music.mid"));
+  if (g_bMusicOn == true)
+	g_pGame->PlayMIDISong(TEXT("Music.mid"));
 
   // Start the game
   //NewGame();
@@ -156,7 +157,8 @@ void GameEnd()
 void GameActivate(HWND hWindow)
 {
   // Resume the background music
-  g_pGame->PlayMIDISong(TEXT(""), FALSE);
+  if (g_bMusicOn == true)
+	  g_pGame->PlayMIDISong(TEXT(""), FALSE);
 }
 
 void GameDeactivate(HWND hWindow)
@@ -236,7 +238,7 @@ void GameCycle()
   else if (g_uiState == UI_GAME && !g_bGameOver)
   {
     // Randomly add aliens
-    if ((rand() % g_iDifficulty) > 20)
+    if ((rand() % g_iDifficulty) < 20)
       AddFalls();
 
     // Update the background
@@ -364,6 +366,25 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				return;
 		}
 	}	
+	else if (g_uiState == UI_GAME && bLeft) {
+		//确定点击的是哪个图标
+		Sprite* pSprite;
+		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+			if (pSprite->GetImage() == g_pMusicOnImage) {
+				g_bMusicOn = false;
+
+				// Close the MIDI player for the background music
+				g_pGame->CloseMIDIPlayer();
+			}
+			else if (pSprite->GetImage() == g_pMusicOffImage) {
+				g_bMusicOn = true;
+			}
+			else if (pSprite->GetImage() == g_pPauseImage) {
+				// 暂停界面
+
+			}
+		}
+	}
 }
 
 void MouseButtonUp(int x, int y, BOOL bLeft)
@@ -387,8 +408,9 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
   if (pHitter == g_pGirlImage && pHittee == g_pAppleImage)
   {
     // Play the small explosion sound
-    PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
-      SND_RESOURCE);
+	if(g_bMusicOn == true)
+		PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
+			SND_RESOURCE);
 
     // Kill apple sprite
 	pSpriteHittee->Kill();
@@ -402,8 +424,9 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
   if (pHitter == g_pGirlImage && pHittee == g_pStoneImage)
   {
     // Play the large explosion sound
-    PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
-      SND_RESOURCE);
+	if (g_bMusicOn == true)
+		PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
+			SND_RESOURCE);
 
     // Kill the stone sprite
 	pSpriteHittee->Kill();
@@ -415,8 +438,9 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     if (--g_iNumLives == 0)
     {
       // Play the game over sound
-      PlaySound((LPCSTR)IDW_GAMEOVER, g_hInstance, SND_ASYNC |
-        SND_RESOURCE);
+	  if (g_bMusicOn == true)
+		PlaySound((LPCSTR)IDW_GAMEOVER, g_hInstance, SND_ASYNC |
+			SND_RESOURCE);
       g_bGameOver = TRUE;
     }
   }
@@ -432,8 +456,9 @@ void SpriteDying(Sprite* pSpriteDying)
     pSpriteDying->GetImage() == g_pTMissileBitmap)
   {
     // Play the small explosion sound
-    PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
-      SND_RESOURCE | SND_NOSTOP);
+	if (g_bMusicOn == true)
+		PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
+			SND_RESOURCE | SND_NOSTOP);
 
     // Create a small explosion sprite at the missile's position
     RECT rcBounds = { 0, 0, g_iWidth, g_iHeight };
@@ -511,7 +536,8 @@ void NewGame()
   g_bGameOver = FALSE;
 
   // Play the background music
-  g_pGame->PlayMIDISong();
+  if (g_bMusicOn == true)
+	g_pGame->PlayMIDISong();
 }
 
 void AddFalls()

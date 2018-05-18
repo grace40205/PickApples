@@ -411,7 +411,6 @@ void GameEngine::CleanupSprites()
   {
     delete (*siSprite);
 	siSprite=m_vSprites.erase(siSprite);
-  
   }
 }
 
