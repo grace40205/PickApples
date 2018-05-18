@@ -78,34 +78,44 @@ void GameStart(HWND hWindow)
 }
 
 void NewOption() {
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+
 	// Obtain a device context for repainting the game
 	HWND  hWindow = g_pGame->GetWindow();
 	HDC   hDC = GetDC(hWindow);
 
-	g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
-	g_pGameSprite = new Sprite(g_pGameImage);
-	g_pGameSprite->SetPosition(200, 100);
-	g_pGame->AddSprite(g_pGameSprite);
+	Sprite* pSprite;
 
-	g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
-	g_pSettingsSprite = new Sprite(g_pSettingsImage);
-	g_pSettingsSprite->SetPosition(200, 140);
-	g_pGame->AddSprite(g_pSettingsSprite);
+	if (g_pGameImage == NULL || g_pSettingsImage == NULL || g_pHelpImage == NULL ||
+		g_pRankImage == NULL || g_pExitImage == NULL)
+	{
+		g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
+		g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
+		g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
+		g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
+		g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
+	}
 
-	g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
-	g_pHelpSprite = new Sprite(g_pHelpImage);
-	g_pHelpSprite->SetPosition(200, 180);
-	g_pGame->AddSprite(g_pHelpSprite);
+	pSprite = new Sprite(g_pGameImage);
+	pSprite->SetPosition(200, 100);
+	g_pGame->AddSprite(pSprite);
 
-	g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
-	g_pRankSprite = new Sprite(g_pRankImage);
-	g_pRankSprite->SetPosition(200, 220);
-	g_pGame->AddSprite(g_pRankSprite);
+	pSprite = new Sprite(g_pSettingsImage);
+	pSprite->SetPosition(200, 140);
+	g_pGame->AddSprite(pSprite);
 
-	g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
-	g_pExitSprite = new Sprite(g_pExitImage);
-	g_pExitSprite->SetPosition(200, 260);
-	g_pGame->AddSprite(g_pExitSprite);
+	pSprite = new Sprite(g_pHelpImage);
+	pSprite->SetPosition(200, 180);
+	g_pGame->AddSprite(pSprite);
+
+	pSprite = new Sprite(g_pRankImage);
+	pSprite->SetPosition(200, 220);
+	g_pGame->AddSprite(pSprite);
+
+	pSprite = new Sprite(g_pExitImage);
+	pSprite->SetPosition(200, 260);
+	g_pGame->AddSprite(pSprite);
 }
 
 void RemoveOption()
