@@ -373,11 +373,20 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 			if (pSprite->GetImage() == g_pMusicOnImage) {
 				g_bMusicOn = false;
 
+				// ∏¸ªªÕº∆¨
+				pSprite->SetImage(g_pMusicOffImage);
+
 				// Close the MIDI player for the background music
-				g_pGame->CloseMIDIPlayer();
+				g_pGame->PauseMIDISong();
 			}
 			else if (pSprite->GetImage() == g_pMusicOffImage) {
 				g_bMusicOn = true;
+
+				// ∏¸ªªÕº∆¨
+				pSprite->SetImage(g_pMusicOnImage);
+
+				// Open the MIDI player for the background music
+				g_pGame->PlayMIDISong();
 			}
 			else if (pSprite->GetImage() == g_pPauseImage) {
 				// ‘›Õ£ΩÁ√Ê

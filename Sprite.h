@@ -82,6 +82,7 @@ public:
   // Accessor Methods
   Bitmap* GetBitmap()               { return m_pBitmap; };
   Image*  GetImage()				{ return m_pImage; };
+  void    SetImage(Image* pImage)	{ m_pImage = pImage; };
   void    SetNumFrames(int iNumFrames, BOOL bOneCycle = FALSE);
   void    SetFrameDelay(int iFrameDelay) { m_iFrameDelay = iFrameDelay; };
   void    SetDieDelay(int iDieDelay) { m_iDieDelay = iDieDelay; };
