@@ -102,5 +102,7 @@ BOOL            g_bGameOver;
 //-----------------------------------------------------------------
 void NewGame();
 void NewOption();
+void NewGameOver();
+void NewGamePause();
 void RemoveOption();
 void AddAlien();
