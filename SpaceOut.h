@@ -54,31 +54,35 @@ Image*           g_pTimmyBitmap;
 Image*           g_pTMissileBitmap;
 Image*           g_pSmExplosionBitmap;
 Image*           g_pLgExplosionBitmap;
-Image*           g_pGameOverBitmap;
 
 //游戏开始界面
 Image*			g_pOpitonBackgroundImage;
 Image*			g_pGameImage;
-Sprite*			g_pGameSprite;
 Image*			g_pSettingsImage;
-Sprite*			g_pSettingsSprite;
 Image*			g_pHelpImage;
-Sprite*			g_pHelpSprite;
 Image*			g_pRankImage;
-Sprite*			g_pRankSprite;
 Image*			g_pExitImage;
-Sprite*			g_pExitSprite;
+
 //游戏场景
 Image*			g_pGameBackgroundImage;
 Image*			g_pAppleImage;
 Image*			g_pStoneImage;
+
 Image*			g_pGirlImage;
 Sprite*         g_pGirlSprite;
+
 Image*			g_pScoreImage;
 Image*			g_pPauseImage;
 Image*			g_pMusicOnImage;
 Image*			g_pMusicOffImage;
 Image*			g_pHeartImage;
+
+Image*          g_pGameAlertImage;
+Image*          g_pGameAgainImage;
+Image*          g_pGameContinueImage;
+Image*          g_pGameMainImage;
+Image*          g_pCancelImage;
+
 //游戏结束/暂停界面
 Image*			g_pEndBackgroundImage;
 Image*			g_pBackToMainImage;
@@ -114,5 +118,6 @@ BOOL            g_bGameOver, g_bMusicOn;
 //-----------------------------------------------------------------
 void NewGame();
 void NewOption(HDC hDC);
+void NewGameOver();
 void RemoveOption();
 void AddFalls();

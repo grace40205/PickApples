@@ -51,8 +51,7 @@ void GameStart(HWND hWindow)
   g_pTimmyBitmap = new Image(hDC, TEXT("Res\\Timmy.bmp"));
   g_pTMissileBitmap = new Image(hDC, TEXT("Res\\TMissile.bmp"));
   g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
-  g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
-  g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
+  g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));  
 
   g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\main_bg.png"));
   g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\game_bg.png"));
@@ -83,30 +82,71 @@ void GameStart(HWND hWindow)
 }
 
 void NewOption(HDC hDC) {
+	Sprite* pSprite;
+
 	g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
-	g_pGameSprite = new Sprite(g_pGameImage);
-	g_pGameSprite->SetPosition(200, 100);
-	g_pGame->AddSprite(g_pGameSprite);
+	pSprite = new Sprite(g_pGameImage);
+	pSprite->SetPosition(200, 100);
+	g_pGame->AddSprite(pSprite);
 
 	g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
-	g_pSettingsSprite = new Sprite(g_pSettingsImage);
-	g_pSettingsSprite->SetPosition(200, 140);
-	g_pGame->AddSprite(g_pSettingsSprite);
+	pSprite = new Sprite(g_pSettingsImage);
+	pSprite->SetPosition(200, 140);
+	g_pGame->AddSprite(pSprite);
 
 	g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
-	g_pHelpSprite = new Sprite(g_pHelpImage);
-	g_pHelpSprite->SetPosition(200, 180);
-	g_pGame->AddSprite(g_pHelpSprite);
+	pSprite = new Sprite(g_pHelpImage);
+	pSprite->SetPosition(200, 180);
+	g_pGame->AddSprite(pSprite);
 
 	g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
-	g_pRankSprite = new Sprite(g_pRankImage);
-	g_pRankSprite->SetPosition(200, 220);
-	g_pGame->AddSprite(g_pRankSprite);
+	pSprite = new Sprite(g_pRankImage);
+	pSprite->SetPosition(200, 220);
+	g_pGame->AddSprite(pSprite);
 
 	g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
-	g_pExitSprite = new Sprite(g_pExitImage);
-	g_pExitSprite->SetPosition(200, 260);
-	g_pGame->AddSprite(g_pExitSprite);
+	pSprite = new Sprite(g_pExitImage);
+	pSprite->SetPosition(200, 260);
+	g_pGame->AddSprite(pSprite);
+}
+
+void NewGameOver()
+{
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+
+	if (g_pGameAlertImage == NULL || g_pGameAgainImage == NULL ||
+		g_pGameMainImage == NULL || g_pCancelImage == NULL)
+	{
+		// Obtain a device context for repainting the game
+		HWND  hWindow = g_pGame->GetWindow();
+		HDC   hDC = GetDC(hWindow);
+
+		g_pGameAlertImage = new Image(hDC, TEXT("Res\\puase_alert.png"));
+		g_pGameAgainImage = new Image(hDC, TEXT("Res\\puase_again.png"));
+		g_pGameMainImage = new Image(hDC, TEXT("Res\\puase_main.png"));
+		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+	}
+
+	Sprite* pSprite;
+	
+	pSprite = new Sprite(g_pGameAlertImage);
+	pSprite->SetPosition(g_iWidth * 0.03, g_iWidth * 0.02);
+	g_pGame->AddSprite(pSprite);
+	
+	RECT position = pSprite->GetPosition();
+
+	pSprite = new Sprite(g_pGameAgainImage);
+	pSprite->SetPosition((int)(position.left + g_iWidth * 0.15), (int)(position.bottom - g_iWidth * 0.18));
+	g_pGame->AddSprite(pSprite);
+	
+	pSprite = new Sprite(g_pGameMainImage);
+	pSprite->SetPosition((int)(position.right - g_iWidth * 0.22), (int)(position.bottom - g_iWidth * 0.18));
+	g_pGame->AddSprite(pSprite);
+	
+	pSprite = new Sprite(g_pCancelImage);
+	pSprite->SetPosition((int)(position.right - g_iWidth * 0.15), (int)(position.top + g_iWidth * 0.01));
+	g_pGame->AddSprite(pSprite);
 }
 
 void RemoveOption()
@@ -142,7 +182,7 @@ void GameEnd()
   delete g_pTMissileBitmap;
   delete g_pSmExplosionBitmap;
   delete g_pLgExplosionBitmap;
-  delete g_pGameOverBitmap;
+  delete g_pGameAlertImage;
 
   // Cleanup the background
   delete g_pBackground;
@@ -187,7 +227,6 @@ void GamePaint(HDC hDC)
 		g_pBackground = new Background(g_pGameBackgroundImage);
 		g_pBackground->Draw(hDC);
 
-
 		// Draw the sprites
 		g_pGame->DrawSprites(hDC);
 
@@ -204,9 +243,9 @@ void GamePaint(HDC hDC)
 			g_pHeartImage->Draw(hDC, 520 + (g_pHeartImage->GetWidth() * i),
 				10);
 
-		// Draw the game over message, if necessary
-		if (g_bGameOver)
-			g_pGameOverBitmap->Draw(hDC, 190, 149);
+		//// Draw the game over message, if necessary
+		//if (g_bGameOver)
+		//	g_pGameAlertImage->Draw(hDC, 190, 149);
 	}
 	else if (g_uiState == UI_SETTINGS)
 	{
@@ -225,7 +264,26 @@ void GamePaint(HDC hDC)
 	}
 	else if (g_uiState == UI_END)
 	{
-		
+		g_pBackground = new Background(g_pGameBackgroundImage);
+		g_pBackground->Draw(hDC);
+
+		if (g_bGameOver)
+		{
+			// Draw the sprites
+			g_pGame->DrawSprites(hDC);
+
+			// Draw the score
+			TCHAR szText[64];
+			RECT  rect = { 430, 0, 460, 30 };
+			wsprintf(szText, "%d", g_iScore);
+			SetBkMode(hDC, TRANSPARENT);
+			SetTextColor(hDC, RGB(255, 255, 255));
+			DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
+		}
+		else
+		{
+
+		}
 	}
 }
 
@@ -246,21 +304,6 @@ void GameCycle()
 
     // Update the sprites
     g_pGame->UpdateSprites();
-
-    // Obtain a device context for repainting the game
-    HWND  hWindow = g_pGame->GetWindow();
-    HDC   hDC = GetDC(hWindow);
-
-    // Paint the game to the offscreen device context
-    GamePaint(g_hOffscreenDC);
-
-    // Blit the offscreen bitmap to the game screen
-    BitBlt(hDC, 0, 0, g_pGame->GetWidth(), g_pGame->GetHeight(),
-      g_hOffscreenDC, 0, 0, SRCCOPY);
-
-    // Cleanup
-    ReleaseDC(hWindow, hDC);
-	return;
   }
   else if (g_uiState == UI_SETTINGS) {
 	 //需要更新的话
@@ -273,6 +316,9 @@ void GameCycle()
   else if (g_uiState == UI_RANK) {
 	 //需要更新的话
 	  
+  }
+  else if (g_uiState == UI_END) {
+	  NewGameOver();
   }
 
   // Obtain a device context for repainting the game
@@ -451,6 +497,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 		PlaySound((LPCSTR)IDW_GAMEOVER, g_hInstance, SND_ASYNC |
 			SND_RESOURCE);
       g_bGameOver = TRUE;
+	  g_uiState = UI_END;
     }
   }
 
@@ -498,7 +545,7 @@ void NewGame()
 	  g_pStoneImage = new Image(hDC, TEXT("Res\\game_stone.png"));
   }
 
-  // 加载分数 生命 暂停 音乐的图片资源
+  // 加载分数 生命 暂停 音乐 的图片资源
   if (g_pScoreImage == NULL || g_pPauseImage == NULL ||
 	  g_pMusicOnImage == NULL || g_pMusicOffImage == NULL ||
 	  g_pHeartImage == NULL)
@@ -511,7 +558,7 @@ void NewGame()
 	  g_pPauseImage = new Image(hDC, TEXT("Res\\game_pause.png"));
 	  g_pMusicOnImage = new Image(hDC, TEXT("Res\\game_music_on.png"));
 	  g_pMusicOffImage = new Image(hDC, TEXT("Res\\game_music_off.png"));
-	  g_pHeartImage = new Image(hDC, TEXT("Res\\game_heart.png"));
+	  g_pHeartImage = new Image(hDC, TEXT("Res\\game_heart.png"));	  
   }
 
   // 添加分数 暂停 音乐Sprite
