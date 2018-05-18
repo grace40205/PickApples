@@ -96,6 +96,7 @@ public:
   void                DrawSprites(HDC hDC);
   void                UpdateSprites();
   void                CleanupSprites();
+  bool				  CleanupSprite(Image* image);
   Sprite*             IsPointInSprite(int x, int y);
   void                PlayMIDISong(LPTSTR szMIDIFileName = TEXT(""),
                         BOOL bRestart = TRUE);

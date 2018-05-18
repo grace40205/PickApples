@@ -31,8 +31,9 @@ const UISTATE  UI_OPTION		= 0x0000L,
 			   UI_SETTINGS		= 0x0002L,
 			   UI_HELP			= 0x0003L,
 			   UI_RANK			= 0x0004L,
-			   UI_END			= 0x0005L, //游戏暂停、结束界面
-			   UI_EXIT			= 0X0006L;
+			   UI_END			= 0x0005L, //游戏暂停
+			   UI_PAUSE         = 0X0006L, //结束界面
+			   UI_EXIT			= 0X0007L;
 
 //-----------------------------------------------------------------
 // Global Variables
@@ -42,8 +43,8 @@ GameEngine*       g_pGame;
 HDC               g_hOffscreenDC;
 HBITMAP           g_hOffscreenBitmap;
 
-int               g_iWidth	= 1152;
-int				  g_iHeight = 648;
+int               g_iWidth	= 960;
+int				  g_iHeight = 540;
 
 Image*            g_pMissileBitmap;
 Image*           g_pBlobboBitmap;
@@ -83,11 +84,6 @@ Image*          g_pGameContinueImage;
 Image*          g_pGameMainImage;
 Image*          g_pCancelImage;
 
-//游戏结束/暂停界面
-Image*			g_pEndBackgroundImage;
-Image*			g_pBackToMainImage;
-Image*			g_pContinueImage;
-Image*			g_pRestartImage;
 //游戏设置界面
 Image*			g_pSettingsBackgroundImage;
 Image*			g_pBGMImage;
@@ -117,7 +113,9 @@ BOOL            g_bGameOver, g_bMusicOn;
 // Function Declarations
 //-----------------------------------------------------------------
 void NewGame();
-void NewOption(HDC hDC);
+void NewOption();
 void NewGameOver();
+void NewGamePause();
 void RemoveOption();
+bool RemovePause();
 void AddFalls();

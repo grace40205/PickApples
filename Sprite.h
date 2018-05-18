@@ -35,8 +35,8 @@ const BOUNDSACTION  BA_STOP			= 0,
 class Sprite
 {
 protected:
-  int			BoundsWidth	 = 1152;
-  int			BoundsHeight = 648;
+  int			BoundsWidth	 = 960;
+  int			BoundsHeight = 540;
   // Member Variables
   Bitmap*       m_pBitmap;
   Image*		m_pImage;
