@@ -514,9 +514,9 @@ void NewGame()
 	  g_pStoneImage = new Image(hDC, TEXT("Res\\game_stone.png"));
   }
 
-  // Create the car sprite
+  // Create the girl sprite
   RECT rcBounds = { 0, 0, 800, 600 };
-  g_pGirlSprite = new Sprite(g_pGirlImage, rcBounds, BA_WRAP);
+  g_pGirlSprite = new Sprite(g_pGirlImage, rcBounds, BA_BOUNCE);
   g_pGirlSprite->SetPosition(300, 350);
   g_pGame->AddSprite(g_pGirlSprite);
 
@@ -536,22 +536,26 @@ void AddFalls()
   // Create a new random alien sprite
   RECT          rcBounds = { 0, 0, 800, 600 };
   Sprite*  pSprite;
-  switch(rand() % 3)
+  switch(rand() % 5)
   {
   case 0:
   case 1:
     // Apple
-    pSprite = new Sprite(g_pAppleImage, rcBounds, BA_BOUNCE);
+    pSprite = new Sprite(g_pAppleImage, rcBounds, BA_STOP);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 800, rand() % 370);
-    pSprite->SetVelocity((rand() % 5) - 2, (rand() % 5) + 3);
+    pSprite->SetPosition(rand() % 800, rand() % 10);
+    pSprite->SetVelocity(0, (rand() % 5) + 3);
+	pSprite->SetDieDelay(20);
     break;
   case 2:
+  case 3:
+  case 4:
     // Stone
-    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_BOUNCE);
+    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_STOP);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 800, rand() % 370);
-    pSprite->SetVelocity((rand() % 7) + 3, 0);
+    pSprite->SetPosition(rand() % 800, rand() % 10);
+    pSprite->SetVelocity(0, (rand() % 5) + 5);
+	pSprite->SetDieDelay(50);
     break;
   }
 

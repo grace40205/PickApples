@@ -36,7 +36,7 @@ protected:
   Bitmap*       m_pBitmap;
   Image*		m_pImage;
   int           m_iNumFrames, m_iCurFrame;
-  int           m_iFrameDelay, m_iFrameTrigger;
+  int           m_iFrameDelay, m_iFrameTrigger, m_iDieDelay;
   RECT          m_rcPosition,
                 m_rcCollision;
   POINT         m_ptVelocity;
@@ -78,6 +78,7 @@ public:
   Image*  GetImage()				{ return m_pImage; };
   void    SetNumFrames(int iNumFrames, BOOL bOneCycle = FALSE);
   void    SetFrameDelay(int iFrameDelay) { m_iFrameDelay = iFrameDelay; };
+  void    SetDieDelay(int iDieDelay) { m_iDieDelay = iDieDelay; };
   RECT&   GetPosition()             { return m_rcPosition; };
   void    SetPosition(int x, int y);
   void    SetPosition(POINT ptPosition);

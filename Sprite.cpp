@@ -18,7 +18,7 @@ Sprite::Sprite(Bitmap* pBitmap)
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, 0, 0, pBitmap->GetWidth(), pBitmap->GetHeight());
   CalcCollisionRect();
   m_ptVelocity.x = m_ptVelocity.y = 0;
@@ -37,7 +37,7 @@ Sprite::Sprite(Image * pImage)
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, 0, 0, pImage->GetWidth(), pImage->GetHeight());
 	CalcCollisionRect();
 	m_ptVelocity.x = m_ptVelocity.y = 0;
@@ -60,7 +60,7 @@ Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, iXPos, iYPos, iXPos + pBitmap->GetWidth(),
     iYPos + pBitmap->GetHeight());
   CalcCollisionRect();
@@ -84,7 +84,7 @@ Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, iXPos, iYPos, iXPos + pImage->GetWidth(),
 		iYPos + pImage->GetHeight());
 	CalcCollisionRect();
@@ -107,7 +107,7 @@ Sprite::Sprite(Bitmap* pBitmap, POINT ptPosition, POINT ptVelocity, int iZOrder,
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, ptPosition.x, ptPosition.y,
     ptPosition.x + pBitmap->GetWidth(), ptPosition.y + pBitmap->GetHeight());
   CalcCollisionRect();
@@ -127,7 +127,7 @@ Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, 
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, ptPosition.x, ptPosition.y,
 		ptPosition.x + pImage->GetWidth(), ptPosition.y + pImage->GetHeight());
 	CalcCollisionRect();
@@ -236,6 +236,11 @@ SPRITEACTION Sprite::Update()
         m_rcBounds.bottom - ptSpriteSize.y));
       SetVelocity(0, 0);
     }
+	if (m_ptVelocity.x == 0 && m_ptVelocity.y == 0)
+	{
+		if (--m_iDieDelay <= 0)
+			m_bDying = true;
+	}
   }
   SetPosition(ptNewPosition);
 
