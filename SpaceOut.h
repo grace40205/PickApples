@@ -57,15 +57,11 @@ Image*           g_pGameOverBitmap;
 //游戏开始界面
 Image*			g_pOpitonBackgroundImage;
 Image*			g_pGameImage;
-Sprite*			g_pGameSprite;
 Image*			g_pSettingsImage;
-Sprite*			g_pSettingsSprite;
 Image*			g_pHelpImage;
-Sprite*			g_pHelpSprite;
 Image*			g_pRankImage;
-Sprite*			g_pRankSprite;
 Image*			g_pExitImage;
-Sprite*			g_pExitSprite;
+
 //游戏场景
 Image*			g_pGameBackgroundImage;
 Image*			g_pAppleImage;
