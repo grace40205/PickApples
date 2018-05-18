@@ -15,7 +15,7 @@ BOOL GameInitialize(HINSTANCE hInstance)
 {
   // Create the game engine
   g_pGame = new GameEngine(hInstance, TEXT("Space Out"),
-    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, 800, 600);
+    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, g_iWidth, g_iHeight);
   if (g_pGame == NULL)
     return FALSE;
 
@@ -43,7 +43,6 @@ void GameStart(HWND hWindow)
   HDC hDC = GetDC(hWindow);
 
   g_pGirlImage = new Image(hDC, TEXT("Res\\game_girl.png"));
-  g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
   g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
   g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.png"));
   g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
@@ -70,6 +69,9 @@ void GameStart(HWND hWindow)
 
   // Create the Game Option UI background
   g_pBackground = new Background(g_pOpitonBackgroundImage);
+
+  // 默认情况下音乐开启
+  g_bMusicOn = true;
 
   // Play the background music
   g_pGame->PlayMIDISong(TEXT("Music.mid"));
@@ -129,7 +131,7 @@ void GameEnd()
 
   // Cleanup the bitmaps
   delete g_pGirlImage;
-  delete g_pSmCarBitmap;
+  delete g_pHeartImage;
   delete g_pMissileBitmap;
   delete g_pBlobboBitmap;
   delete g_pBMissileBitmap;
@@ -189,7 +191,7 @@ void GamePaint(HDC hDC)
 
 		// Draw the score
 		TCHAR szText[64];
-		RECT  rect = { 460, 0, 510, 30 };
+		RECT  rect = { 430, 0, 460, 30 };
 		wsprintf(szText, "%d", g_iScore);
 		SetBkMode(hDC, TRANSPARENT);
 		SetTextColor(hDC, RGB(255, 255, 255));
@@ -197,7 +199,7 @@ void GamePaint(HDC hDC)
 
 		// Draw the number of remaining lives (cars)
 		for (int i = 0; i < g_iNumLives; i++)
-			g_pSmCarBitmap->Draw(hDC, 520 + (g_pSmCarBitmap->GetWidth() * i),
+			g_pHeartImage->Draw(hDC, 520 + (g_pHeartImage->GetWidth() * i),
 				10);
 
 		// Draw the game over message, if necessary
@@ -234,7 +236,7 @@ void GameCycle()
   else if (g_uiState == UI_GAME && !g_bGameOver)
   {
     // Randomly add aliens
-    if ((rand() % g_iDifficulty) == 0)
+    if ((rand() % g_iDifficulty) > 20)
       AddFalls();
 
     // Update the background
@@ -299,31 +301,12 @@ void HandleKeys()
       ptVelocity.x = max(ptVelocity.x - 1, -4);
       g_pGirlSprite->SetVelocity(ptVelocity);
     }
-    else if (GetAsyncKeyState(VK_RIGHT) < 0)
-    {
-      // Move right
-      ptVelocity.x = min(ptVelocity.x + 2, 6);
-      g_pGirlSprite->SetVelocity(ptVelocity);
-    }
-
-    // Fire missiles based upon spacebar presses
-    if ((++g_iFireInputDelay > 6) && GetAsyncKeyState(VK_SPACE) < 0)
-    {
-      // Create a new missile sprite
-      RECT  rcBounds = { 0, 0, 800, 600 };
-      RECT  rcPos = g_pGirlSprite->GetPosition();
-      Sprite* pSprite = new Sprite(g_pMissileBitmap, rcBounds, BA_DIE);
-      pSprite->SetPosition(rcPos.left + 15, 400);
-      pSprite->SetVelocity(0, -7);
-      g_pGame->AddSprite(pSprite);
-
-      // Play the missile (fire) sound
-      PlaySound((LPCSTR)IDW_MISSILE, g_hInstance, SND_ASYNC |
-        SND_RESOURCE | SND_NOSTOP);
-
-      // Reset the input delay
-      g_iFireInputDelay = 0;
-    }
+	else if (GetAsyncKeyState(VK_RIGHT) < 0)
+	{
+		// Move right
+		ptVelocity.x = min(ptVelocity.x + 2, 6);
+		g_pGirlSprite->SetVelocity(ptVelocity);
+	}
   }
 
   // Start a new game based upon an Enter (Return) key press
@@ -397,69 +380,36 @@ void HandleJoystick(JOYSTATE jsJoystickState)
 
 BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 {
-  // See if a player missile and an alien have collided
   Image* pHitter = pSpriteHitter->GetImage();
   Image* pHittee = pSpriteHittee->GetImage();
-  if ((pHitter == g_pMissileBitmap && (pHittee == g_pBlobboBitmap ||
-    pHittee == g_pJellyBitmap || pHittee == g_pTimmyBitmap)) ||
-    (pHittee == g_pMissileBitmap && (pHitter == g_pBlobboBitmap ||
-    pHitter == g_pJellyBitmap || pHitter == g_pTimmyBitmap)))
+  
+  // See if the girl and an apple have collided
+  if (pHitter == g_pGirlImage && pHittee == g_pAppleImage)
   {
     // Play the small explosion sound
     PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
       SND_RESOURCE);
 
-    // Kill both sprites
-    pSpriteHitter->Kill();
-    pSpriteHittee->Kill();
-
-    // Create a large explosion sprite at the alien's position
-    RECT rcBounds = { 0, 0, 800, 600 };
-    RECT rcPos;
-    if (pHitter == g_pMissileBitmap)
-      rcPos = pSpriteHittee->GetPosition();
-    else
-      rcPos = pSpriteHitter->GetPosition();
-    Sprite* pSprite = new Sprite(g_pLgExplosionBitmap, rcBounds);
-    pSprite->SetNumFrames(8, TRUE);
-    pSprite->SetPosition(rcPos.left, rcPos.top);
-    g_pGame->AddSprite(pSprite);
+    // Kill apple sprite
+	pSpriteHittee->Kill();
 
     // Update the score
-    g_iScore += 25;
+    g_iScore += 1;
     g_iDifficulty = max(80 - (g_iScore / 20), 20);
   }
 
-  // See if an alien missile has collided with the car
-  if ((pHitter == g_pGirlImage && (pHittee == g_pBMissileBitmap ||
-    pHittee == g_pJMissileBitmap || pHittee == g_pTMissileBitmap)) ||
-    (pHittee == g_pGirlImage && (pHitter == g_pBMissileBitmap ||
-    pHitter == g_pJMissileBitmap || pHitter == g_pTMissileBitmap)))
+  // See if a stone has collided with the girl
+  if (pHitter == g_pGirlImage && pHittee == g_pStoneImage)
   {
     // Play the large explosion sound
     PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
       SND_RESOURCE);
 
-    // Kill the missile sprite
-    if (pHitter == g_pGirlImage)
-      pSpriteHittee->Kill();
-    else
-      pSpriteHitter->Kill();
-
-    // Create a large explosion sprite at the car's position
-    RECT rcBounds = { 0, 0, 800, 480 };
-    RECT rcPos;
-    if (pHitter == g_pGirlImage)
-      rcPos = pSpriteHitter->GetPosition();
-    else
-      rcPos = pSpriteHittee->GetPosition();
-    Sprite* pSprite = new Sprite(g_pLgExplosionBitmap, rcBounds);
-    pSprite->SetNumFrames(8, TRUE);
-    pSprite->SetPosition(rcPos.left, rcPos.top);
-    g_pGame->AddSprite(pSprite);
+    // Kill the stone sprite
+	pSpriteHittee->Kill();
 
     // Move the car back to the start
-    g_pGirlSprite->SetPosition(300, 405);
+    g_pGirlSprite->SetPosition((int)g_iWidth * 0.3, (int)(g_iHeight - g_pGirlImage->GetHeight()));
 
     // See if the game is over
     if (--g_iNumLives == 0)
@@ -486,7 +436,7 @@ void SpriteDying(Sprite* pSpriteDying)
       SND_RESOURCE | SND_NOSTOP);
 
     // Create a small explosion sprite at the missile's position
-    RECT rcBounds = { 0, 0, 800, 600 };
+    RECT rcBounds = { 0, 0, g_iWidth, g_iHeight };
     RECT rcPos = pSpriteDying->GetPosition();
     Sprite* pSprite = new Sprite(g_pSmExplosionBitmap, rcBounds);
     pSprite->SetNumFrames(8, TRUE);
@@ -514,10 +464,43 @@ void NewGame()
 	  g_pStoneImage = new Image(hDC, TEXT("Res\\game_stone.png"));
   }
 
+  // 加载分数 生命 暂停 音乐的图片资源
+  if (g_pScoreImage == NULL || g_pPauseImage == NULL ||
+	  g_pMusicOnImage == NULL || g_pMusicOffImage == NULL ||
+	  g_pHeartImage == NULL)
+  {
+	  // Obtain a device context for repainting the game
+	  HWND  hWindow = g_pGame->GetWindow();
+	  HDC   hDC = GetDC(hWindow);
+
+	  g_pScoreImage = new Image(hDC, TEXT("Res\\game_socre.png"));
+	  g_pPauseImage = new Image(hDC, TEXT("Res\\game_pause.png"));
+	  g_pMusicOnImage = new Image(hDC, TEXT("Res\\game_music_on.png"));
+	  g_pMusicOffImage = new Image(hDC, TEXT("Res\\game_music_off.png"));
+	  g_pHeartImage = new Image(hDC, TEXT("Res\\game_heart.png"));
+  }
+
+  // 添加分数 暂停 音乐Sprite
+  Sprite* pScoreSprite = new Sprite(g_pScoreImage);
+  pScoreSprite->SetPosition(0, 0);
+  g_pGame->AddSprite(pScoreSprite);
+
+  Sprite* pPauseSprite = new Sprite(g_pPauseImage);
+  pPauseSprite->SetPosition((int)(g_iWidth - 3 * g_pPauseImage->GetWidth() - 20), 10);
+  g_pGame->AddSprite(pPauseSprite);
+
+  Sprite* pMusicSprite;
+  if (g_bMusicOn == true)
+	  pMusicSprite = new Sprite(g_pMusicOnImage);
+  else
+	  pMusicSprite = new Sprite(g_pMusicOffImage);
+  pMusicSprite->SetPosition((int)(g_iWidth - 1.5 * g_pMusicOnImage->GetWidth() - 10), 10);
+  g_pGame->AddSprite(pMusicSprite);
+
   // Create the girl sprite
-  RECT rcBounds = { 0, 0, 800, 600 };
+  RECT rcBounds = { 0, 0, g_iWidth, g_iHeight };
   g_pGirlSprite = new Sprite(g_pGirlImage, rcBounds, BA_BOUNCE);
-  g_pGirlSprite->SetPosition(300, 350);
+  g_pGirlSprite->SetPosition((int)g_iWidth * 0.3, (int)(g_iHeight - g_pGirlImage->GetHeight()));
   g_pGame->AddSprite(g_pGirlSprite);
 
   // Initialize the game variables
@@ -534,31 +517,35 @@ void NewGame()
 void AddFalls()
 {
   // Create a new random alien sprite
-  RECT          rcBounds = { 0, 0, 800, 600 };
-  Sprite*  pSprite;
+  RECT          rcBounds = { 0, 0, g_iWidth, g_iHeight };
+  Sprite*  pSprite = NULL;
   switch(rand() % 5)
   {
   case 0:
-  case 1:
     // Apple
-    pSprite = new Sprite(g_pAppleImage, rcBounds, BA_STOP);
+    pSprite = new Sprite(g_pAppleImage, rcBounds, BA_DISAPPEAR);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 800, rand() % 10);
+    pSprite->SetPosition(rand() % g_iWidth, rand() % 10);
     pSprite->SetVelocity(0, (rand() % 5) + 3);
 	pSprite->SetDieDelay(20);
+	pSprite->SetCollidable(TRUE);
     break;
+  case 1:
   case 2:
   case 3:
+	break;
   case 4:
     // Stone
-    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_STOP);
+    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_DISAPPEAR);
     pSprite->SetNumFrames(8);
-    pSprite->SetPosition(rand() % 800, rand() % 10);
+    pSprite->SetPosition(rand() % g_iWidth, rand() % 10);
     pSprite->SetVelocity(0, (rand() % 5) + 5);
 	pSprite->SetDieDelay(50);
+	pSprite->SetCollidable(TRUE);
     break;
   }
 
   // Add the sprite
-  g_pGame->AddSprite(pSprite);
+  if(pSprite != NULL)
+	g_pGame->AddSprite(pSprite);
 }

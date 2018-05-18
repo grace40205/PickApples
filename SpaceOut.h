@@ -42,7 +42,9 @@ GameEngine*       g_pGame;
 HDC               g_hOffscreenDC;
 HBITMAP           g_hOffscreenBitmap;
 
-Image*			  g_pSmCarBitmap;
+int               g_iWidth	= 1152;
+int				  g_iHeight = 648;
+
 Image*            g_pMissileBitmap;
 Image*           g_pBlobboBitmap;
 Image*           g_pBMissileBitmap;
@@ -72,8 +74,11 @@ Image*			g_pAppleImage;
 Image*			g_pStoneImage;
 Image*			g_pGirlImage;
 Sprite*         g_pGirlSprite;
+Image*			g_pScoreImage;
 Image*			g_pPauseImage;
-Image*			g_pSoundImage;
+Image*			g_pMusicOnImage;
+Image*			g_pMusicOffImage;
+Image*			g_pHeartImage;
 //游戏结束/暂停界面
 Image*			g_pEndBackgroundImage;
 Image*			g_pBackToMainImage;
@@ -100,7 +105,9 @@ GAMESTATE		g_gaState;
 
 int             g_iFireInputDelay;
 int             g_iNumLives, g_iScore, g_iDifficulty;
-BOOL            g_bGameOver;
+BOOL            g_bGameOver, g_bMusicOn;
+
+
 
 //-----------------------------------------------------------------
 // Function Declarations

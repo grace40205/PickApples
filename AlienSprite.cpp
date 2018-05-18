@@ -17,7 +17,7 @@ extern Image* g_pJellyBitmap;
 extern Image* g_pJMissileBitmap;
 extern Image* g_pTimmyBitmap;
 extern Image* g_pTMissileBitmap;
-extern int     g_iDifficulty;
+extern int    g_iDifficulty;
 
 //-----------------------------------------------------------------
 // AlienSprite Constructor(s)/Destructor
@@ -57,7 +57,7 @@ SPRITEACTION AlienSprite::Update()
 Sprite* AlienSprite::AddSprite()
 {
   // Create a new missile sprite
-  RECT    rcBounds = { 0, 0, 640, 410 };
+  RECT    rcBounds = { 0, 0, BoundsWidth, BoundsHeight };
   RECT    rcPos = GetPosition();
   Sprite* pSprite = NULL;
   if (GetImage() == g_pBlobboBitmap)

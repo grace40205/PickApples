@@ -23,11 +23,12 @@ Sprite::Sprite(Bitmap* pBitmap)
   CalcCollisionRect();
   m_ptVelocity.x = m_ptVelocity.y = 0;
   m_iZOrder = 0;
-  SetRect(&m_rcBounds, 0, 0, 640, 480);
+  SetRect(&m_rcBounds, 0, 0, BoundsWidth, BoundsHeight);
   m_baBoundsAction = BA_STOP;
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage)
@@ -42,11 +43,12 @@ Sprite::Sprite(Image * pImage)
 	CalcCollisionRect();
 	m_ptVelocity.x = m_ptVelocity.y = 0;
 	m_iZOrder = 0;
-	SetRect(&m_rcBounds, 0, 0, 640, 480);
+	SetRect(&m_rcBounds, 0, 0, BoundsWidth, BoundsHeight);
 	m_baBoundsAction = BA_STOP;
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
@@ -71,6 +73,7 @@ Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
@@ -95,6 +98,7 @@ Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 
@@ -118,6 +122,7 @@ Sprite::Sprite(Bitmap* pBitmap, POINT ptPosition, POINT ptVelocity, int iZOrder,
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, RECT & rcBounds, BOUNDSACTION baBoundsAction)
@@ -138,6 +143,7 @@ Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, 
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 Sprite::~Sprite()
@@ -219,6 +225,29 @@ SPRITEACTION Sprite::Update()
       ptNewPosition.y > m_rcBounds.bottom)
       return SA_KILL;
   }
+  // Disappear
+  else if(m_baBoundsAction == BA_DISAPPEAR)
+  {
+	  if (ptNewPosition.x  < m_rcBounds.left ||
+		  ptNewPosition.x >(m_rcBounds.right - ptSpriteSize.x))
+	  {
+		  ptNewPosition.x = max(m_rcBounds.left, min(ptNewPosition.x,
+			  m_rcBounds.right - ptSpriteSize.x));
+		  SetVelocity(0, 0);
+	  }
+	  if (ptNewPosition.y  < m_rcBounds.top ||
+		  ptNewPosition.y >(m_rcBounds.bottom - ptSpriteSize.y))
+	  {
+		  ptNewPosition.y = max(m_rcBounds.top, min(ptNewPosition.y,
+			  m_rcBounds.bottom - ptSpriteSize.y));
+		  SetVelocity(0, 0);
+	  }
+	  if (m_ptVelocity.x == 0 && m_ptVelocity.y == 0)
+	  {
+		  if (--m_iDieDelay <= 0)
+			  m_bDying = true;
+	  }
+  }
   // Stop (default)
   else
   {
@@ -236,11 +265,6 @@ SPRITEACTION Sprite::Update()
         m_rcBounds.bottom - ptSpriteSize.y));
       SetVelocity(0, 0);
     }
-	if (m_ptVelocity.x == 0 && m_ptVelocity.y == 0)
-	{
-		if (--m_iDieDelay <= 0)
-			m_bDying = true;
-	}
   }
   SetPosition(ptNewPosition);
 

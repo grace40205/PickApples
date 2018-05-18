@@ -78,7 +78,7 @@ protected:
 public:
   // Constructor(s)/Destructor
           GameEngine(HINSTANCE hInstance, LPTSTR szWindowClass, LPTSTR szTitle,
-            WORD wIcon, WORD wSmallIcon, int iWidth = 640, int iHeight = 480);
+            WORD wIcon, WORD wSmallIcon, int iWidth = 1920, int iHeight = 1080);
   virtual ~GameEngine();
 
   // General Methods

@@ -85,7 +85,7 @@ BOOL GameEngine::CheckSpriteCollision(Sprite* pTestSprite)
     // Make sure not to check for collision with itself
     if (pTestSprite == (*siSprite))
       continue;
-
+	
     // Test the collision
     if (pTestSprite->TestCollision(*siSprite))
       // Collision detected
@@ -395,7 +395,7 @@ void GameEngine::UpdateSprites()
     }
 
     // See if the sprite collided with any others
-    if (CheckSpriteCollision(*siSprite))
+    if ((*siSprite)->IsCollidable() && CheckSpriteCollision(*siSprite))
       // Restore the old sprite position
       (*siSprite)->SetPosition(rcOldSpritePos);
 
