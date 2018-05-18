@@ -74,12 +74,14 @@ void GameStart(HWND hWindow)
   // Play the background music
   g_pGame->PlayMIDISong(TEXT("Music.mid"));
 
-  // Start the game
-  //NewGame();
-  NewOption(hDC);
+  NewOption();
 }
 
-void NewOption(HDC hDC) {
+void NewOption() {
+	// Obtain a device context for repainting the game
+	HWND  hWindow = g_pGame->GetWindow();
+	HDC   hDC = GetDC(hWindow);
+
 	g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
 	g_pGameSprite = new Sprite(g_pGameImage);
 	g_pGameSprite->SetPosition(200, 100);

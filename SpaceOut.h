@@ -105,6 +105,6 @@ BOOL            g_bGameOver;
 // Function Declarations
 //-----------------------------------------------------------------
 void NewGame();
-void NewOption(HDC hDC);
+void NewOption();
 void RemoveOption();
 void AddAlien();
