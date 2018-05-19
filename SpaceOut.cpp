@@ -314,12 +314,23 @@ void GamePaint(HDC hDC)
 		g_pGame->DrawSprites(hDC);
 
 		// Draw the score
+		LOGFONT lonfont;
+		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
+		lonfont.lfHeight = 48;  
+		lonfont.lfWidth = 40;
+		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
+		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("宋体"));
+		HFONT hfont = CreateFontIndirect(&lonfont);
+
 		TCHAR szText[64];
-		RECT  rect = { 430, 0, 460, 30 };
+		RECT  rect = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.02), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
 		wsprintf(szText, "%d", g_iScore);
+
+		SelectObject(hDC, hfont);
 		SetBkMode(hDC, TRANSPARENT);
 		SetTextColor(hDC, RGB(255, 255, 255));
-		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_RIGHT | DT_VCENTER);
+		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+		DeleteObject(hfont);
 
 		// Draw the number of remaining lives (cars)
 		for (int i = 0; i < g_iNumLives; i++)
@@ -350,12 +361,23 @@ void GamePaint(HDC hDC)
 		g_pGame->DrawSprites(hDC);
 
 		// Draw the score
+		LOGFONT lonfont;
+		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
+		lonfont.lfHeight = 54; 
+		lonfont.lfWidth = 45;
+		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
+		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("宋体"));
+		HFONT hfont = CreateFontIndirect(&lonfont);
+
 		TCHAR szText[64];
-		RECT  rect = { 430, 0, 460, 30 };
+		RECT  rect = { (int)(g_iWidth * 0.4) , (int)(g_iHeight * 0.38), (int)(g_iWidth * 0.6), (int)(g_iHeight * 0.5) };
 		wsprintf(szText, "%d", g_iScore);
+
+		SelectObject(hDC, hfont);
 		SetBkMode(hDC, TRANSPARENT);
 		SetTextColor(hDC, RGB(255, 255, 255));
-		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_RIGHT | DT_VCENTER);		
+		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);		
+		DeleteObject(hfont);
 	}
 }
 
