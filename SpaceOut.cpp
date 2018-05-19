@@ -323,7 +323,7 @@ void GamePaint(HDC hDC)
 		HFONT hfont = CreateFontIndirect(&lonfont);
 
 		TCHAR szText[64];
-		RECT  rect = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.02), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		RECT  rect = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.0), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
 		wsprintf(szText, "%d", g_iScore);
 
 		SelectObject(hDC, hfont);
