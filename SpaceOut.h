@@ -20,31 +20,31 @@
 //-----------------------------------------------------------------
 // Custom Data Types
 //-----------------------------------------------------------------
-typedef WORD        GAMESTATE;
-const GAMESTATE  GA_NEW			= 0x0000L, //开始新游戏
-				 GA_DIE			= 0x0001L, //游戏失败
-				 GA_CONTINUE	= 0x0002L; //上一次游戏
+typedef WORD    GAMESTATE;
+const GAMESTATE GA_NEW			= 0x0000L, //开始新游戏
+				GA_DIE			= 0x0001L, //游戏失败
+				GA_CONTINUE		= 0x0000L; //上一次游戏
 
-typedef WORD        UISTATE;
-const UISTATE  UI_OPTION		= 0x0000L,
-			   UI_GAME			= 0x0001L,
-			   UI_SETTINGS		= 0x0002L,
-			   UI_HELP			= 0x0003L,
-			   UI_RANK			= 0x0004L,
-			   UI_END			= 0x0005L, //游戏暂停
-			   UI_PAUSE         = 0X0006L, //结束界面
-			   UI_EXIT			= 0X0007L;
+typedef WORD    UISTATE;
+const UISTATE	UI_OPTION		= 0x0000L,
+				UI_GAME			= 0x0001L,
+				UI_SETTINGS		= 0x0002L,
+				UI_HELP			= 0x0003L,
+				UI_RANK			= 0x0004L,
+				UI_END			= 0x0005L, //游戏暂停
+				UI_PAUSE        = 0X0006L, //结束界面
+				UI_EXIT			= 0X0007L;
 
 //-----------------------------------------------------------------
 // Global Variables
 //-----------------------------------------------------------------
-HINSTANCE         g_hInstance;
-GameEngine*       g_pGame;
-HDC               g_hOffscreenDC;
-HBITMAP           g_hOffscreenBitmap;
+HINSTANCE       g_hInstance;
+GameEngine*     g_pGame;
+HDC             g_hOffscreenDC;
+HBITMAP         g_hOffscreenBitmap;
 
-int               g_iWidth	= 960;
-int				  g_iHeight = 540;
+int             g_iWidth	= 960;
+int				g_iHeight	= 540;
 
 //游戏开始界面
 Image*			g_pOpitonBackgroundImage;
@@ -96,8 +96,6 @@ GAMESTATE		g_gaState;
 int             g_iFireInputDelay;
 int             g_iNumLives, g_iScore, g_iDifficulty;
 BOOL            g_bGameOver, g_bMusicOn;
-
-
 
 //-----------------------------------------------------------------
 // Function Declarations

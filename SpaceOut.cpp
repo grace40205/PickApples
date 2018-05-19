@@ -662,6 +662,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 			SND_RESOURCE);
       g_bGameOver = TRUE;
 	  g_uiState = UI_END;
+	  g_gaState = GA_DIE;
     }
   }
 
@@ -693,6 +694,8 @@ void SpriteDying(Sprite* pSpriteDying)
 //-----------------------------------------------------------------
 void NewGame()
 {
+  g_gaState = GA_NEW;
+
   // Clear the sprites
   g_pGame->CleanupSprites();
 
