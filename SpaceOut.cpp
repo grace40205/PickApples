@@ -43,15 +43,6 @@ void GameStart(HWND hWindow)
   HDC hDC = GetDC(hWindow);
 
   g_pGirlImage = new Image(hDC, TEXT("Res\\game_girl.png"));
-  g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
-  g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.png"));
-  g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
-  g_pJellyBitmap = new Image(hDC, TEXT("Res\\Jelly.bmp"));
-  g_pJMissileBitmap = new Image(hDC, TEXT("Res\\JMissile.bmp"));
-  g_pTimmyBitmap = new Image(hDC, TEXT("Res\\Timmy.bmp"));
-  g_pTMissileBitmap = new Image(hDC, TEXT("Res\\TMissile.bmp"));
-  g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
-  g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));  
 
   g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\main_bg.png"));
   g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\game_bg.png"));
@@ -236,19 +227,45 @@ void GameEnd()
   DeleteObject(g_hOffscreenBitmap);
   DeleteDC(g_hOffscreenDC);  
 
-  // Cleanup the bitmaps
-  delete g_pGirlImage;
-  delete g_pHeartImage;
-  delete g_pMissileBitmap;
-  delete g_pBlobboBitmap;
-  delete g_pBMissileBitmap;
-  delete g_pJellyBitmap;
-  delete g_pJMissileBitmap;
-  delete g_pTimmyBitmap;
-  delete g_pTMissileBitmap;
-  delete g_pSmExplosionBitmap;
-  delete g_pLgExplosionBitmap;
-  delete g_pGameAlertImage;
+  // Cleanup the images
+  // 游戏开始界面
+  delete			g_pOpitonBackgroundImage;
+  delete			g_pGameImage;
+  delete			g_pSettingsImage;
+  delete			g_pHelpImage;
+  delete			g_pRankImage;
+  delete			g_pExitImage;
+
+  // 游戏场景
+  delete			g_pGameBackgroundImage;
+  delete			g_pAppleImage;
+  delete			g_pStoneImage;
+
+  delete			g_pGirlImage;
+
+  delete			g_pScoreImage;
+  delete			g_pPauseImage;
+  delete			g_pMusicOnImage;
+  delete			g_pMusicOffImage;
+  delete			g_pHeartImage;
+
+  delete			g_pGameAlertImage;
+  delete			g_pGameAgainImage;
+  delete			g_pGameContinueImage;
+  delete			g_pGameMainImage;
+  delete			g_pCancelImage;
+
+  // 游戏设置界面
+  delete			g_pSettingsBackgroundImage;
+  delete			g_pBGMImage;
+  delete			g_pSoundEffectImage;
+  delete			g_pDifficultyImage;
+  delete			g_pCheckboxImage;
+  delete			g_pTickImage;
+  // 游戏帮助界面
+  delete			g_pHelpBackgroundImage;
+  // 游戏排行榜界面
+  delete			g_pRankBackgroundImage;
 
   // Cleanup the background
   delete g_pBackground;
@@ -631,23 +648,21 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
 
 void SpriteDying(Sprite* pSpriteDying)
 {
-  // See if an alien missile sprite is dying
-  if (pSpriteDying->GetImage() == g_pBMissileBitmap ||
-    pSpriteDying->GetImage() == g_pJMissileBitmap ||
-    pSpriteDying->GetImage() == g_pTMissileBitmap)
+  // See if an apple sprite is dying
+  if (pSpriteDying->GetImage() == g_pAppleImage)
   {
-    // Play the small explosion sound
+    // Play sound
 	if (g_bMusicOn == true)
 		PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
 			SND_RESOURCE | SND_NOSTOP);
-
-    // Create a small explosion sprite at the missile's position
-    RECT rcBounds = { 0, 0, g_iWidth, g_iHeight };
-    RECT rcPos = pSpriteDying->GetPosition();
-    Sprite* pSprite = new Sprite(g_pSmExplosionBitmap, rcBounds);
-    pSprite->SetNumFrames(8, TRUE);
-    pSprite->SetPosition(rcPos.left, rcPos.top);
-    g_pGame->AddSprite(pSprite);
+  }
+  // See if a stone prite is dying
+  else if (pSpriteDying->GetImage() == g_pStoneImage)
+  {
+	  // Play sound
+	  if (g_bMusicOn == true)
+		  PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
+			  SND_RESOURCE | SND_NOSTOP);
   }
 }
 

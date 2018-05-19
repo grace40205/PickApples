@@ -46,16 +46,6 @@ HBITMAP           g_hOffscreenBitmap;
 int               g_iWidth	= 960;
 int				  g_iHeight = 540;
 
-Image*            g_pMissileBitmap;
-Image*           g_pBlobboBitmap;
-Image*           g_pBMissileBitmap;
-Image*           g_pJellyBitmap;
-Image*           g_pJMissileBitmap;
-Image*           g_pTimmyBitmap;
-Image*           g_pTMissileBitmap;
-Image*           g_pSmExplosionBitmap;
-Image*           g_pLgExplosionBitmap;
-
 //游戏开始界面
 Image*			g_pOpitonBackgroundImage;
 Image*			g_pGameImage;

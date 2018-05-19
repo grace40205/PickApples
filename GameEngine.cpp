@@ -423,6 +423,7 @@ bool GameEngine::CleanupSprite(Image * image)
 	{
 		if ((*siSprite)->GetImage() == image)
 		{
+			delete (*siSprite);
 			siSprite = m_vSprites.erase(siSprite);
 			done = true;
 			break;

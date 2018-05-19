@@ -11,13 +11,10 @@
 //-----------------------------------------------------------------
 // External Global Variables
 //-----------------------------------------------------------------
-extern Image* g_pBlobboBitmap;
-extern Image* g_pBMissileBitmap;
-extern Image* g_pJellyBitmap;
-extern Image* g_pJMissileBitmap;
-extern Image* g_pTimmyBitmap;
-extern Image* g_pTMissileBitmap;
+extern Image* g_pStoneImage;
+extern Image* g_pStoneImage;
 extern int    g_iDifficulty;
+
 
 //-----------------------------------------------------------------
 // AlienSprite Constructor(s)/Destructor
@@ -60,24 +57,13 @@ Sprite* AlienSprite::AddSprite()
   RECT    rcBounds = { 0, 0, BoundsWidth, BoundsHeight };
   RECT    rcPos = GetPosition();
   Sprite* pSprite = NULL;
-  if (GetImage() == g_pBlobboBitmap)
+  if (GetImage() == g_pStoneImage)
   {
     // Blobbo missile
-    pSprite = new Sprite(g_pBMissileBitmap, rcBounds, BA_DIE);
+    pSprite = new Sprite(g_pStoneImage, rcBounds, BA_DIE);
     pSprite->SetVelocity(0, 7);
   }
-  else if (GetImage() == g_pJellyBitmap)
-  {
-    // Jelly missile
-    pSprite = new Sprite(g_pJMissileBitmap, rcBounds, BA_DIE);
-    pSprite->SetVelocity(0, 5);
-  }
-  else
-  {
-    // Timmy missile
-    pSprite = new Sprite(g_pTMissileBitmap, rcBounds, BA_DIE);
-    pSprite->SetVelocity(0, 3);
-  }
+
 
   // Set the missile sprite's position and return it
   pSprite->SetPosition(rcPos.left + (GetWidth() / 2), rcPos.bottom);
