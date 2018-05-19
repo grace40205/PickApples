@@ -85,7 +85,7 @@ BOOL GameEngine::CheckSpriteCollision(Sprite* pTestSprite)
     // Make sure not to check for collision with itself
     if (pTestSprite == (*siSprite))
       continue;
-
+	
     // Test the collision
     if (pTestSprite->TestCollision(*siSprite))
       // Collision detected
@@ -395,7 +395,7 @@ void GameEngine::UpdateSprites()
     }
 
     // See if the sprite collided with any others
-    if (CheckSpriteCollision(*siSprite))
+    if ((*siSprite)->IsCollidable() && CheckSpriteCollision(*siSprite))
       // Restore the old sprite position
       (*siSprite)->SetPosition(rcOldSpritePos);
 
@@ -411,8 +411,25 @@ void GameEngine::CleanupSprites()
   {
     delete (*siSprite);
 	siSprite=m_vSprites.erase(siSprite);
-  
   }
+}
+
+bool GameEngine::CleanupSprite(Image * image)
+{
+	bool done = false;
+	// Delete and remove the specific sprite in the sprite vector
+	vector<Sprite*>::iterator siSprite;
+	for (siSprite = m_vSprites.begin(); siSprite != m_vSprites.end(); siSprite++)
+	{
+		if ((*siSprite)->GetImage() == image)
+		{
+			delete (*siSprite);
+			siSprite = m_vSprites.erase(siSprite);
+			done = true;
+			break;
+		}
+	}
+	return done;
 }
 
 Sprite* GameEngine::IsPointInSprite(int x, int y)

@@ -21,10 +21,13 @@ const SPRITEACTION  SA_NONE      = 0x0000L,
                     SA_ADDSPRITE = 0x0002L;
 
 typedef WORD        BOUNDSACTION;
-const BOUNDSACTION  BA_STOP   = 0,
-                    BA_WRAP   = 1,
-                    BA_BOUNCE = 2,
-                    BA_DIE    = 3;
+const BOUNDSACTION  BA_STOP			= 0,
+                    BA_WRAP			= 1,
+                    BA_BOUNCE		= 2,
+                    BA_DIE			= 3,
+					BA_DISAPPEAR	= 4;
+
+
 
 //-----------------------------------------------------------------
 // Sprite Class
@@ -32,11 +35,13 @@ const BOUNDSACTION  BA_STOP   = 0,
 class Sprite
 {
 protected:
+  int			BoundsWidth	 = 960;
+  int			BoundsHeight = 540;
   // Member Variables
   Bitmap*       m_pBitmap;
   Image*		m_pImage;
   int           m_iNumFrames, m_iCurFrame;
-  int           m_iFrameDelay, m_iFrameTrigger;
+  int           m_iFrameDelay, m_iFrameTrigger, m_iDieDelay;
   RECT          m_rcPosition,
                 m_rcCollision;
   POINT         m_ptVelocity;
@@ -46,6 +51,7 @@ protected:
   BOOL          m_bHidden;
   BOOL          m_bDying;
   BOOL          m_bOneCycle;
+  BOOL			m_bCollidable;
 
   // Helper Methods
   void          UpdateFrame();
@@ -76,8 +82,10 @@ public:
   // Accessor Methods
   Bitmap* GetBitmap()               { return m_pBitmap; };
   Image*  GetImage()				{ return m_pImage; };
+  void    SetImage(Image* pImage)	{ m_pImage = pImage; };
   void    SetNumFrames(int iNumFrames, BOOL bOneCycle = FALSE);
   void    SetFrameDelay(int iFrameDelay) { m_iFrameDelay = iFrameDelay; };
+  void    SetDieDelay(int iDieDelay) { m_iDieDelay = iDieDelay; };
   RECT&   GetPosition()             { return m_rcPosition; };
   void    SetPosition(int x, int y);
   void    SetPosition(POINT ptPosition);
@@ -92,6 +100,8 @@ public:
   void    SetBounds(RECT& rcBounds) { CopyRect(&m_rcBounds, &rcBounds); };
   void    SetBoundsAction(BOUNDSACTION ba) { m_baBoundsAction = ba; };
   BOOL    IsHidden()                { return m_bHidden; };
+  void    SetCollidable(BOOL bCollidable) { m_bCollidable = bCollidable;}
+  BOOL    IsCollidable()			{ return m_bCollidable;}
   void    SetHidden(BOOL bHidden)   { m_bHidden = bHidden; };
   int     GetWidth()                { return m_pImage == nullptr ? m_pBitmap->GetWidth() : m_pImage->GetWidth(); };
   int     GetHeight()
