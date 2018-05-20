@@ -33,7 +33,9 @@ const UISTATE	UI_OPTION		= 0x0000L,
 				UI_RANK			= 0x0004L,
 				UI_END			= 0x0005L, //游戏暂停
 				UI_PAUSE        = 0X0006L, //结束界面
-				UI_EXIT			= 0X0007L;
+				UI_EXIT			= 0X0007L,
+				UI_CONTINUE		= 0X0008L;
+
 
 //-----------------------------------------------------------------
 // Global Variables
@@ -53,6 +55,11 @@ Image*			g_pSettingsImage;
 Image*			g_pHelpImage;
 Image*			g_pRankImage;
 Image*			g_pExitImage;
+Image*			g_pContinueImage;
+Image*			g_pCancleImage;
+//游戏继续界面的提示
+Image*			g_pContinueHintImage;
+
 
 //游戏场景
 Image*			g_pGameBackgroundImage;
@@ -102,6 +109,10 @@ BOOL            g_bGameOver, g_bMusicOn;
 //-----------------------------------------------------------------
 void NewGame();
 void NewOption();
+void NewSeeting();
+void NewHelp();
+void NewRank();
+void NewContinue();
 void NewGameOver();
 void NewGamePause();
 void RemoveOption();
