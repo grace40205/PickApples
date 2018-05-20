@@ -32,7 +32,9 @@ const UISTATE  UI_OPTION		= 0x0000L,
 			   UI_HELP			= 0x0003L,
 			   UI_RANK			= 0x0004L,
 			   UI_END			= 0x0005L, //游戏暂停、结束界面
-			   UI_EXIT			= 0X0006L;
+			   UI_EXIT			= 0X0006L,
+			   UI_CONTINUE		= 0X0007L,
+				UI_CANCLE = 0X0008L;//小红叉叉
 
 //-----------------------------------------------------------------
 // Global Variables
@@ -66,6 +68,12 @@ Image*			g_pRankImage;
 Sprite*			g_pRankSprite;
 Image*			g_pExitImage;
 Sprite*			g_pExitSprite;
+Image*			g_pContinueImage;
+Sprite*			g_pContinueSprite;
+//取消——小红叉叉
+Image*			g_pCancleImage;
+Sprite*			g_pCancleSprite;
+
 //游戏场景
 Image*			g_pGameBackgroundImage;
 Image*			g_pAppleImage;
@@ -77,7 +85,6 @@ Image*			g_pSoundImage;
 //游戏结束/暂停界面
 Image*			g_pEndBackgroundImage;
 Image*			g_pBackToMainImage;
-Image*			g_pContinueImage;
 Image*			g_pRestartImage;
 //游戏设置界面
 Image*			g_pSettingsBackgroundImage;
@@ -90,6 +97,7 @@ Image*			g_pTickImage;
 Image*			g_pHelpBackgroundImage;
 //游戏排行榜界面
 Image*			g_pRankBackgroundImage;
+
 
 Background*		g_pBackground;
 

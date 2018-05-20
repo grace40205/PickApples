@@ -15,7 +15,7 @@ BOOL GameInitialize(HINSTANCE hInstance)
 {
   // Create the game engine
   g_pGame = new GameEngine(hInstance, TEXT("Space Out"),
-    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, 600, 450);
+    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, 600,450);
   if (g_pGame == NULL)
     return FALSE;
 
@@ -27,82 +27,96 @@ BOOL GameInitialize(HINSTANCE hInstance)
 
   return TRUE;
 }
-
 void GameStart(HWND hWindow)
 {
-  // Seed the random number generator
-  srand(GetTickCount());
+	// Seed the random number generator
+	srand(GetTickCount());
 
-  // Create the offscreen device context and bitmap
-  g_hOffscreenDC = CreateCompatibleDC(GetDC(hWindow));
-  g_hOffscreenBitmap = CreateCompatibleBitmap(GetDC(hWindow),
-    g_pGame->GetWidth(), g_pGame->GetHeight());
-  SelectObject(g_hOffscreenDC, g_hOffscreenBitmap);
+	// Create the offscreen device context and bitmap
+	g_hOffscreenDC = CreateCompatibleDC(GetDC(hWindow));
+	g_hOffscreenBitmap = CreateCompatibleBitmap(GetDC(hWindow),
+		g_pGame->GetWidth(), g_pGame->GetHeight());
+	SelectObject(g_hOffscreenDC, g_hOffscreenBitmap);
 
-  // Create and load the images
-  HDC hDC = GetDC(hWindow);
+	// Create and load the images
+	HDC hDC = GetDC(hWindow);
 
-  g_pPlayerImage = new Image(hDC, TEXT("Res\\Car.bmp"));
-  g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
-  g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
-  g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.png"));
-  g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
-  g_pJellyBitmap = new Image(hDC, TEXT("Res\\Jelly.bmp"));
-  g_pJMissileBitmap = new Image(hDC, TEXT("Res\\JMissile.bmp"));
-  g_pTimmyBitmap = new Image(hDC, TEXT("Res\\Timmy.bmp"));
-  g_pTMissileBitmap = new Image(hDC, TEXT("Res\\TMissile.bmp"));
-  g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
-  g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
-  g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
+	g_pPlayerImage = new Image(hDC, TEXT("Res\\Car.bmp"));
+	g_pSmCarBitmap = new Image(hDC, TEXT("Res\\SmCar.bmp"));
+	g_pMissileBitmap = new Image(hDC, TEXT("Res\\Missile.bmp"));
+	g_pBlobboBitmap = new Image(hDC, TEXT("Res\\Blobbo.png"));
+	g_pBMissileBitmap = new Image(hDC, TEXT("Res\\BMissile.bmp"));
+	g_pJellyBitmap = new Image(hDC, TEXT("Res\\Jelly.bmp"));
+	g_pJMissileBitmap = new Image(hDC, TEXT("Res\\JMissile.bmp"));
+	g_pTimmyBitmap = new Image(hDC, TEXT("Res\\Timmy.bmp"));
+	g_pTMissileBitmap = new Image(hDC, TEXT("Res\\TMissile.bmp"));
+	g_pSmExplosionBitmap = new Image(hDC, TEXT("Res\\SmExplosion.bmp"));
+	g_pLgExplosionBitmap = new Image(hDC, TEXT("Res\\LgExplosion.bmp"));
+	g_pGameOverBitmap = new Image(hDC, TEXT("Res\\GameOver.bmp"));
 
-  g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\OptionBackground.jpg"));
-  g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\GameBackground.jpg"));
-  g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\SettingsBackground.jpg"));
-  g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\HelpBackground.jpg"));
-  g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\RankBackground.jpg"));
+	g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\main_bg.png"));
+	g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\GameBackground.jpg"));
+	g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\SettingsBackground.jpg"));
+	g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\HelpBackground.jpg"));
+	g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\RankBackground.jpg"));
 
-  
-  // 默认情况下进入游戏选择界面
-  g_uiState = UI_OPTION;
 
-  // 这里应该读取xml文件获得开始游戏的模式：新游戏，上一个游戏
-  g_gaState = GA_NEW;
+	// 默认情况下进入游戏选择界面
+	g_uiState = UI_OPTION;
 
-  // Create the Game Option UI background
-  g_pBackground = new Background(g_pOpitonBackgroundImage);
+	// 这里应该读取xml文件获得开始游戏的模式：新游戏，上一个游戏
+	g_gaState = GA_NEW;
 
-  // Play the background music
-  g_pGame->PlayMIDISong(TEXT("Music.mid"));
+	// Create the Game Option UI background
+	g_pBackground = new Background(g_pOpitonBackgroundImage);
 
-  
-  NewOption(hDC);
+	// Play the background music
+	g_pGame->PlayMIDISong(TEXT("Music.mid"));
+
+
+	NewOption(hDC);
 }
 
+//按钮图片以及位置设定
 void NewOption(HDC hDC) {
-	g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
+	
+	g_pGameImage = new Image(hDC, TEXT("Res\\main_btn_start.png"));
 	g_pGameSprite = new Sprite(g_pGameImage);
 	g_pGameSprite->SetPosition(200, 100);
 	g_pGame->AddSprite(g_pGameSprite);
+	
 
-	g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
+	g_pSettingsImage = new Image(hDC, TEXT("Res\\main_btn_setting.png"));
 	g_pSettingsSprite = new Sprite(g_pSettingsImage);
 	g_pSettingsSprite->SetPosition(200, 140);
 	g_pGame->AddSprite(g_pSettingsSprite);
 
-	g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
+	g_pHelpImage = new Image(hDC, TEXT("Res\\main_btn_help.png"));
 	g_pHelpSprite = new Sprite(g_pHelpImage);
 	g_pHelpSprite->SetPosition(200, 180);
 	g_pGame->AddSprite(g_pHelpSprite);
 
-	g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
+	g_pRankImage = new Image(hDC, TEXT("Res\\main_btn_ranking_list.png"));
 	g_pRankSprite = new Sprite(g_pRankImage);
 	g_pRankSprite->SetPosition(200, 220);
 	g_pGame->AddSprite(g_pRankSprite);
 
-	g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
+	g_pExitImage = new Image(hDC, TEXT("Res\\main_btn_exit.png"));
 	g_pExitSprite = new Sprite(g_pExitImage);
 	g_pExitSprite->SetPosition(200, 260);
 	g_pGame->AddSprite(g_pExitSprite);
+
+	g_pContinueImage = new Image(hDC, TEXT("Res\\main_btn_continue.png"));
+	g_pContinueSprite = new Sprite(g_pContinueImage);
+	g_pContinueSprite->SetPosition(200, 300);
+	g_pGame->AddSprite(g_pContinueSprite);
+}
+void NewCancle(HDC hDC) {
+	//取消——就是小红××
+	g_pCancleImage = new Image(hDC, TEXT("Res\\cancle.png"));
+	g_pGameSprite = new Sprite(g_pCancleImage);
+	g_pGameSprite->SetPosition(100, 100);
+	g_pGame->AddSprite(g_pCancleSprite);
 }
 
 void RemoveOption()
@@ -112,6 +126,8 @@ void RemoveOption()
 	delete			g_pHelpImage;
 	delete			g_pRankImage;
 	delete			g_pExitImage;
+	delete          g_pContinueImage;
+	delete			g_pCancleImage;
 
 	// Cleanup the sprites
 	g_pGame->CleanupSprites();
@@ -161,7 +177,17 @@ void GameDeactivate(HWND hWindow)
   // Pause the background music
   g_pGame->PauseMIDISong();
 }
+//点击了小红叉叉后页面跳转到游戏主界面
+void GameCancle(HDC hDC) {
+	if (g_uiState == UI_CANCLE)
+	{
+		g_pBackground = new Background(g_pOpitonBackgroundImage);
+		g_pBackground->Draw(hDC);
 
+		// Draw the sprites
+		g_pGame->DrawSprites(hDC);
+	}
+}
 void GamePaint(HDC hDC)
 {
 	//必须自己管理动态生成的资源
@@ -207,6 +233,8 @@ void GamePaint(HDC hDC)
 	{
 		g_pBackground = new Background(g_pSettingsBackgroundImage);
 		g_pBackground->Draw(hDC);
+		NewCancle(hDC);
+
 	}
 	else if (g_uiState == UI_HELP)
 	{
@@ -216,6 +244,14 @@ void GamePaint(HDC hDC)
 	else if (g_uiState == UI_RANK)
 	{
 		g_pBackground = new Background(g_pRankBackgroundImage);
+		g_pBackground->Draw(hDC);
+	}
+	else if (g_uiState == UI_CONTINUE) {
+		g_pBackground = new Background(g_pGameBackgroundImage);
+		g_pBackground->Draw(hDC);
+	}
+	else if (g_uiState == UI_CANCLE) {
+		g_pBackground = new Background(g_pGameImage);
 		g_pBackground->Draw(hDC);
 	}
 	else if (g_uiState == UI_END)
@@ -268,6 +304,14 @@ void GameCycle()
   else if (g_uiState == UI_RANK) {
 	 //需要更新的话
 	  
+  }
+  else if (g_uiState == UI_CONTINUE) {
+	  //需要更新的话
+
+  }
+  else if (g_uiState == UI_CANCLE) {
+	  //需要更新的话
+
   }
 
   // Obtain a device context for repainting the game
@@ -331,9 +375,9 @@ void HandleKeys()
     NewGame();
 }
 
-void MouseButtonDown(int x, int y, BOOL bLeft)
+void MouseButtonDown(int x, int y, BOOL bRieght)
 {
-	if (g_uiState == UI_OPTION && bLeft) {
+	if (g_uiState == UI_OPTION && bRieght) {
 		//确定点击的是哪个图标
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
@@ -346,6 +390,14 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				RemoveOption();
 				//记载新界面需要的资源(除背景图片外)
 				NewGame();
+			}
+			//小红叉叉
+			else if (pSprite->GetImage() == g_pCancleImage) {
+				g_uiState = UI_CANCLE;
+
+				//跳转界面 需先清理开始界面的五个按钮的资源
+				RemoveOption();//------------------------------------------------------------------------need change
+				//记载新界面需要的资源
 			}
 			else if (pSprite->GetImage() == g_pSettingsImage) {
 				g_uiState = UI_SETTINGS;
@@ -376,13 +428,20 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 
 				g_pGame->Quit();
 			}
+			else if (pSprite->GetImage() == g_pContinueImage) {//-------------继续游戏
+				g_uiState = UI_CONTINUE;
+
+				//跳转界面 需先清理开始界面的五个按钮的资源
+				RemoveOption();
+				//记载新界面需要的资源
+			}
 			else
 				return;
 		}
 	}	
 }
 
-void MouseButtonUp(int x, int y, BOOL bLeft)
+void MouseButtonUp(int x, int y, BOOL bRieght)
 {
 }
 
