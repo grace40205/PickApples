@@ -46,9 +46,10 @@ void GameStart(HWND hWindow)
 
   g_pOpitonBackgroundImage = new Image(hDC, TEXT("Res\\main_bg.png"));
   g_pGameBackgroundImage = new Image(hDC, TEXT("Res\\game_bg.png"));
-  g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\settings_alert.png"));
-  g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\help_alert.png"));
-  g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\ranking_list_alert.png"));
+
+  //g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\settings_alert.png"));
+  //g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\help_alert.png"));
+  //g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\ranking_list_alert.png"));
 
   
   // 默认情况下进入游戏选择界面
@@ -81,33 +82,142 @@ void NewOption() {
 	Sprite* pSprite;
 
 	if (g_pGameImage == NULL || g_pSettingsImage == NULL || g_pHelpImage == NULL ||
-		g_pRankImage == NULL || g_pExitImage == NULL)
+		g_pRankImage == NULL || g_pExitImage == NULL|| g_pContinueImage == NULL)
 	{
-		g_pGameImage = new Image(hDC, TEXT("Res\\Game.jpg"));
-		g_pSettingsImage = new Image(hDC, TEXT("Res\\Settings.jpg"));
-		g_pHelpImage = new Image(hDC, TEXT("Res\\Help.jpg"));
-		g_pRankImage = new Image(hDC, TEXT("Res\\Rank.jpg"));
-		g_pExitImage = new Image(hDC, TEXT("Res\\Exit.jpg"));
+		g_pGameImage = new Image(hDC, TEXT("Res\\main_btn_start.png"));
+		g_pSettingsImage = new Image(hDC, TEXT("Res\\main_btn_setting.png"));
+		g_pHelpImage = new Image(hDC, TEXT("Res\\main_btn_help.png"));
+		g_pRankImage = new Image(hDC, TEXT("Res\\main_btn_ranking_list.png"));
+		g_pExitImage = new Image(hDC, TEXT("Res\\main_btn_exit.png"));
+		g_pContinueImage = new Image(hDC, TEXT("Res\\main_btn_continue.png"));
+
 	}
 
 	pSprite = new Sprite(g_pGameImage);
-	pSprite->SetPosition(200, 100);
+	pSprite->SetPosition(650, 40);
+	g_pGame->AddSprite(pSprite);
+
+	pSprite = new Sprite(g_pContinueImage);
+	pSprite->SetPosition(650, 120);
 	g_pGame->AddSprite(pSprite);
 
 	pSprite = new Sprite(g_pSettingsImage);
-	pSprite->SetPosition(200, 140);
+	pSprite->SetPosition(650, 200);
 	g_pGame->AddSprite(pSprite);
 
 	pSprite = new Sprite(g_pHelpImage);
-	pSprite->SetPosition(200, 180);
+	pSprite->SetPosition(650, 280);
 	g_pGame->AddSprite(pSprite);
 
 	pSprite = new Sprite(g_pRankImage);
-	pSprite->SetPosition(200, 220);
+	pSprite->SetPosition(650, 360);
 	g_pGame->AddSprite(pSprite);
 
 	pSprite = new Sprite(g_pExitImage);
-	pSprite->SetPosition(200, 260);
+	pSprite->SetPosition(650, 440);
+	g_pGame->AddSprite(pSprite);
+
+	
+}
+void NewSeeting() {
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+
+	if (g_pCancelImage == NULL|| g_pSettingsBackgroundImage == NULL)
+	{
+		// Obtain a device context for repainting the game
+		HWND  hWindow = g_pGame->GetWindow();
+		HDC   hDC = GetDC(hWindow);
+		g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\settings_alert.png"));
+		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+	}
+
+	Sprite* pSprite;
+
+	pSprite = new Sprite(g_pSettingsBackgroundImage);
+	pSprite->SetPosition(g_iWidth * 0.5 - 0.5 * g_pSettingsBackgroundImage->GetWidth(), g_iHeight * 0.5 - 0.5 * g_pSettingsBackgroundImage->GetHeight());
+	g_pGame->AddSprite(pSprite);
+
+	RECT position = pSprite->GetPosition();
+
+	pSprite = new Sprite(g_pCancelImage);
+	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
+	g_pGame->AddSprite(pSprite);
+}
+void NewRank() {
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+
+	if (g_pCancelImage == NULL || g_pRankBackgroundImage == NULL)
+	{
+		// Obtain a device context for repainting the game
+		HWND  hWindow = g_pGame->GetWindow();
+		HDC   hDC = GetDC(hWindow);
+		g_pRankBackgroundImage = new Image(hDC, TEXT("Res\\ranking_list_alert.png"));
+		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+	}
+
+	Sprite* pSprite;
+
+	pSprite = new Sprite(g_pRankBackgroundImage);
+	pSprite->SetPosition(g_iWidth * 0.5 - 0.5 * g_pRankBackgroundImage->GetWidth(), g_iHeight * 0.5 - 0.5 * g_pRankBackgroundImage->GetHeight());
+	g_pGame->AddSprite(pSprite);
+
+	RECT position = pSprite->GetPosition();
+
+	pSprite = new Sprite(g_pCancelImage);
+	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
+	g_pGame->AddSprite(pSprite);
+}
+void NewHelp() {
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+
+	if (g_pCancelImage == NULL || g_pHelpBackgroundImage == NULL)
+	{
+		// Obtain a device context for repainting the game
+		HWND  hWindow = g_pGame->GetWindow();
+		HDC   hDC = GetDC(hWindow);
+		g_pHelpBackgroundImage = new Image(hDC, TEXT("Res\\help_alert.png"));
+		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+	}
+
+	Sprite* pSprite;
+
+	pSprite = new Sprite(g_pHelpBackgroundImage);
+	pSprite->SetPosition(g_iWidth * 0.5 - 0.5 * g_pHelpBackgroundImage->GetWidth(), g_iHeight * 0.5 - 0.5 * g_pHelpBackgroundImage->GetHeight());
+	g_pGame->AddSprite(pSprite);
+
+	RECT position = pSprite->GetPosition();
+
+	pSprite = new Sprite(g_pCancelImage);
+	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
+	g_pGame->AddSprite(pSprite);
+}
+void NewContinue() {
+	// Clear the sprites
+	g_pGame->CleanupSprites();
+		
+
+	if (g_pCancelImage == NULL || g_pContinueHintImage == NULL)
+	{
+		// Obtain a device context for repainting the game
+		HWND  hWindow = g_pGame->GetWindow();
+		HDC   hDC = GetDC(hWindow);
+		g_pContinueHintImage = new Image(hDC, TEXT("Res\\continue_null.png"));
+		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+	}
+
+	Sprite* pSprite;
+
+	pSprite = new Sprite(g_pContinueHintImage);
+	pSprite->SetPosition(g_iWidth * 0.5 - 0.5 * g_pContinueHintImage->GetWidth(), g_iHeight * 0.5 - 0.5 * g_pContinueHintImage->GetHeight());
+	g_pGame->AddSprite(pSprite);
+
+	RECT position = pSprite->GetPosition();
+
+	pSprite = new Sprite(g_pCancelImage);
+	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
 	g_pGame->AddSprite(pSprite);
 }
 
@@ -149,6 +259,7 @@ void NewGameOver()
 	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
 	g_pGame->AddSprite(pSprite);
 }
+
 
 void NewGamePause()
 {
@@ -339,18 +450,21 @@ void GamePaint(HDC hDC)
 	}
 	else if (g_uiState == UI_SETTINGS)
 	{
-		g_pBackground = new Background(g_pSettingsBackgroundImage);
+		g_pBackground = new Background(g_pOpitonBackgroundImage);
 		g_pBackground->Draw(hDC);
+		g_pGame->DrawSprites(hDC);
 	}
 	else if (g_uiState == UI_HELP)
 	{
-		g_pBackground = new Background(g_pHelpBackgroundImage);
+		g_pBackground = new Background(g_pOpitonBackgroundImage);
 		g_pBackground->Draw(hDC);
+		g_pGame->DrawSprites(hDC);
 	}
 	else if (g_uiState == UI_RANK)
 	{
-		g_pBackground = new Background(g_pRankBackgroundImage);
+		g_pBackground = new Background(g_pOpitonBackgroundImage);
 		g_pBackground->Draw(hDC);
+		g_pGame->DrawSprites(hDC);
 	}
 	else if (g_uiState == UI_END || g_uiState == UI_PAUSE)
 	{
@@ -378,6 +492,11 @@ void GamePaint(HDC hDC)
 		SetTextColor(hDC, RGB(255, 255, 255));
 		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);		
 		DeleteObject(hfont);
+	}
+	else if (g_uiState == UI_CONTINUE) {
+		g_pBackground = new Background(g_pGameBackgroundImage);
+		g_pBackground->Draw(hDC);
+		g_pGame->DrawSprites(hDC);
 	}
 }
 
@@ -482,6 +601,8 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				//跳转界面 需先清理开始界面的五个按钮的资源
 				RemoveOption();
 				//加载新界面需要的资源
+				NewSeeting();
+				
 
 			}
 			else if (pSprite->GetImage() == g_pHelpImage) {
@@ -490,6 +611,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				//跳转界面 需先清理开始界面的五个按钮的资源
 				RemoveOption();
 				//加载新界面需要的资源
+				NewHelp();
 
 			}
 			else if (pSprite->GetImage() == g_pRankImage) {
@@ -498,7 +620,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				//跳转界面 需先清理开始界面的五个按钮的资源
 				RemoveOption();
 				//加载新界面需要的资源
-
+				NewRank();
 			}
 			else if (pSprite->GetImage() == g_pExitImage) {
 				g_uiState = UI_EXIT;
@@ -508,10 +630,78 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 
 				g_pGame->Quit();
 			}
+			else if (pSprite->GetImage() == g_pContinueImage) {
+				//——————————————————-读取保存文档的xml中的	g_gaState的值
+
+				GAMESTATE g_gaState_value;
+				g_gaState_value = GA_CONTINUE;
+				if (g_gaState_value != GA_CONTINUE) {
+					
+					//设置相关资源
+					//......
+
+
+					//进入游戏
+					g_uiState = UI_GAME;
+
+				}
+				else {
+					g_uiState = UI_CONTINUE;
+					
+				//跳转界面 需先清理开始界面的五个按钮的资源
+				RemoveOption();
+				//加载新界面需要的资源
+					NewContinue();
+				}
+			}
 			else
 				return;
 		}
 	}	
+	else if (g_uiState == UI_RANK && bLeft) {
+		Sprite* pSprite;
+		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+			if (pSprite->GetImage() == g_pCancelImage) {
+				// 红叉
+				g_uiState = UI_OPTION;
+
+				NewOption();
+			}
+		}
+	}
+	else if (g_uiState == UI_CONTINUE && bLeft) {
+		Sprite* pSprite;
+		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+			if (pSprite->GetImage() == g_pCancelImage) {
+				// 红叉
+				g_uiState = UI_OPTION;
+
+				NewOption();
+			}
+		}
+	}
+	else if(g_uiState == UI_SETTINGS && bLeft){
+		Sprite* pSprite;
+		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+			if (pSprite->GetImage() == g_pCancelImage) {
+				// 红叉
+				g_uiState = UI_OPTION;
+
+				NewOption();
+			}
+		}
+	}
+	else if (g_uiState == UI_HELP && bLeft) {
+		Sprite* pSprite;
+		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+			if (pSprite->GetImage() == g_pCancelImage) {
+				// 红叉
+				g_uiState = UI_OPTION;
+
+				NewOption();
+			}
+		}
+	}
 	else if (g_uiState == UI_GAME && bLeft) {
 		//确定点击的是哪个图标
 		Sprite* pSprite;
