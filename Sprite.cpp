@@ -18,16 +18,17 @@ Sprite::Sprite(Bitmap* pBitmap)
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, 0, 0, pBitmap->GetWidth(), pBitmap->GetHeight());
   CalcCollisionRect();
   m_ptVelocity.x = m_ptVelocity.y = 0;
   m_iZOrder = 0;
-  SetRect(&m_rcBounds, 0, 0, 640, 480);
+  SetRect(&m_rcBounds, 0, 0, BoundsWidth, BoundsHeight);
   m_baBoundsAction = BA_STOP;
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage)
@@ -37,16 +38,17 @@ Sprite::Sprite(Image * pImage)
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, 0, 0, pImage->GetWidth(), pImage->GetHeight());
 	CalcCollisionRect();
 	m_ptVelocity.x = m_ptVelocity.y = 0;
 	m_iZOrder = 0;
-	SetRect(&m_rcBounds, 0, 0, 640, 480);
+	SetRect(&m_rcBounds, 0, 0, BoundsWidth, BoundsHeight);
 	m_baBoundsAction = BA_STOP;
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
@@ -60,7 +62,7 @@ Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, iXPos, iYPos, iXPos + pBitmap->GetWidth(),
     iYPos + pBitmap->GetHeight());
   CalcCollisionRect();
@@ -71,6 +73,7 @@ Sprite::Sprite(Bitmap* pBitmap, RECT& rcBounds, BOUNDSACTION baBoundsAction)
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
@@ -84,7 +87,7 @@ Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, iXPos, iYPos, iXPos + pImage->GetWidth(),
 		iYPos + pImage->GetHeight());
 	CalcCollisionRect();
@@ -95,6 +98,7 @@ Sprite::Sprite(Image * pImage, RECT & rcBounds, BOUNDSACTION baBoundsAction)
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 
@@ -107,7 +111,7 @@ Sprite::Sprite(Bitmap* pBitmap, POINT ptPosition, POINT ptVelocity, int iZOrder,
   m_pImage = nullptr;
 
   m_iNumFrames = 1;
-  m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+  m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
   SetRect(&m_rcPosition, ptPosition.x, ptPosition.y,
     ptPosition.x + pBitmap->GetWidth(), ptPosition.y + pBitmap->GetHeight());
   CalcCollisionRect();
@@ -118,6 +122,7 @@ Sprite::Sprite(Bitmap* pBitmap, POINT ptPosition, POINT ptVelocity, int iZOrder,
   m_bHidden = FALSE;
   m_bDying = FALSE;
   m_bOneCycle = FALSE;
+  m_bCollidable = FALSE;
 }
 
 Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, RECT & rcBounds, BOUNDSACTION baBoundsAction)
@@ -127,7 +132,7 @@ Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, 
 	m_pImage = pImage;
 
 	m_iNumFrames = 1;
-	m_iCurFrame = m_iFrameDelay = m_iFrameTrigger = 0;
+	m_iCurFrame = m_iFrameDelay = m_iDieDelay = m_iFrameTrigger = 0;
 	SetRect(&m_rcPosition, ptPosition.x, ptPosition.y,
 		ptPosition.x + pImage->GetWidth(), ptPosition.y + pImage->GetHeight());
 	CalcCollisionRect();
@@ -138,6 +143,7 @@ Sprite::Sprite(Image * pImage, POINT ptPosition, POINT ptVelocity, int iZOrder, 
 	m_bHidden = FALSE;
 	m_bDying = FALSE;
 	m_bOneCycle = FALSE;
+	m_bCollidable = FALSE;
 }
 
 Sprite::~Sprite()
@@ -218,6 +224,29 @@ SPRITEACTION Sprite::Update()
       (ptNewPosition.y + ptSpriteSize.y) < m_rcBounds.top ||
       ptNewPosition.y > m_rcBounds.bottom)
       return SA_KILL;
+  }
+  // Disappear
+  else if(m_baBoundsAction == BA_DISAPPEAR)
+  {
+	  if (ptNewPosition.x  < m_rcBounds.left ||
+		  ptNewPosition.x >(m_rcBounds.right - ptSpriteSize.x))
+	  {
+		  ptNewPosition.x = max(m_rcBounds.left, min(ptNewPosition.x,
+			  m_rcBounds.right - ptSpriteSize.x));
+		  SetVelocity(0, 0);
+	  }
+	  if (ptNewPosition.y  < m_rcBounds.top ||
+		  ptNewPosition.y >(m_rcBounds.bottom - ptSpriteSize.y))
+	  {
+		  ptNewPosition.y = max(m_rcBounds.top, min(ptNewPosition.y,
+			  m_rcBounds.bottom - ptSpriteSize.y));
+		  SetVelocity(0, 0);
+	  }
+	  if (m_ptVelocity.x == 0 && m_ptVelocity.y == 0)
+	  {
+		  if (--m_iDieDelay <= 0)
+			  m_bDying = true;
+	  }
   }
   // Stop (default)
   else
