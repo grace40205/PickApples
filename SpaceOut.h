@@ -83,11 +83,17 @@ Image*          g_pCancelImage;
 
 //游戏设置界面
 Image*			g_pSettingsBackgroundImage;
-Image*			g_pBGMImage;
-Image*			g_pSoundEffectImage;
-Image*			g_pDifficultyImage;
-Image*			g_pCheckboxImage;
-Image*			g_pTickImage;
+Image*			g_pBGMOnImage;
+Image*			g_pBGMOffImage;
+Image*			g_pSoundOnImage;
+Image*			g_pSoundOffImage;
+Image*			g_pEasyOnImage;
+Image*			g_pNormalOnImage;
+Image*			g_pDifficultOnImage;
+Image*			g_pEasyOffImage;
+Image*			g_pNormalOffImage;
+Image*			g_pDifficultOffImage;
+int             g_sDifficulty=2;
 //游戏帮助界面
 Image*			g_pHelpBackgroundImage;
 //游戏排行榜界面
@@ -102,14 +108,14 @@ GAMESTATE		g_gaState;
 
 int             g_iFireInputDelay;
 int             g_iNumLives, g_iScore, g_iDifficulty;
-BOOL            g_bGameOver, g_bMusicOn;
+BOOL            g_bGameOver, g_bMusicOn, g_bBGMOn, g_bSoundOn;
 
 //-----------------------------------------------------------------
 // Function Declarations
 //-----------------------------------------------------------------
 void NewGame();
 void NewOption();
-void NewSeeting();
+void NewSetting();
 void NewHelp();
 void NewRank();
 void NewContinue();
@@ -118,3 +124,4 @@ void NewGamePause();
 void RemoveOption();
 bool RemovePause();
 void AddFalls();
+void PlayMouseClickSound();
