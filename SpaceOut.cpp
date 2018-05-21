@@ -8,14 +8,17 @@
 //-----------------------------------------------------------------
 #include "SpaceOut.h"
 
+Sprite* pEasySprite;
+Sprite* pNormalSprite;
+Sprite* pDifficultSprite;
 //-----------------------------------------------------------------
 // Game Engine Functions
 //-----------------------------------------------------------------
 BOOL GameInitialize(HINSTANCE hInstance)
 {
   // Create the game engine
-  g_pGame = new GameEngine(hInstance, TEXT("Space Out"),
-    TEXT("Space Out"), IDI_SPACEOUT, IDI_SPACEOUT_SM, g_iWidth, g_iHeight);
+  g_pGame = new GameEngine(hInstance, TEXT("接苹果"),
+    TEXT("接苹果"), IDI_SPACEOUT, IDI_SPACEOUT_SM, g_iWidth, g_iHeight);
   if (g_pGame == NULL)
     return FALSE;
 
@@ -63,10 +66,12 @@ void GameStart(HWND hWindow)
 
   // 默认情况下音乐开启
   g_bMusicOn = true;
+  g_bBGMOn = true;
+  g_bSoundOn = true;
 
   // Play the background music
-  if (g_bMusicOn == true)
-	g_pGame->PlayMIDISong(TEXT("Music.mid"));
+  if (g_bMusicOn == true||g_bBGMOn == true)
+	g_pGame->PlayMIDISong(TEXT("Res\\Music.mid"));
 
   NewOption();
 }
@@ -119,17 +124,31 @@ void NewOption() {
 
 	
 }
-void NewSeeting() {
+void NewSetting() {
 	// Clear the sprites
 	g_pGame->CleanupSprites();
 
-	if (g_pCancelImage == NULL|| g_pSettingsBackgroundImage == NULL)
+	if (g_pCancelImage == NULL|| g_pSettingsBackgroundImage == NULL|| g_pBGMOnImage == NULL ||
+		g_pBGMOffImage == NULL || g_pSoundOnImage == NULL ||
+		g_pSoundOffImage == NULL || g_pEasyOnImage == NULL || g_pNormalOnImage == NULL ||
+		g_pDifficultOnImage == NULL|| g_pEasyOffImage == NULL || g_pNormalOffImage == NULL ||
+		g_pDifficultOffImage == NULL)
 	{
 		// Obtain a device context for repainting the game
 		HWND  hWindow = g_pGame->GetWindow();
 		HDC   hDC = GetDC(hWindow);
 		g_pSettingsBackgroundImage = new Image(hDC, TEXT("Res\\settings_alert.png"));
 		g_pCancelImage = new Image(hDC, TEXT("Res\\cancel.png"));
+		g_pBGMOnImage = new Image(hDC, TEXT("Res\\settings_box_on.png"));
+		g_pBGMOffImage = new Image(hDC, TEXT("Res\\settings_box_off.png"));
+		g_pSoundOnImage = new Image(hDC, TEXT("Res\\settings_box_on.png"));
+		g_pSoundOffImage = new Image(hDC, TEXT("Res\\settings_box_off.png"));
+		g_pEasyOnImage = new Image(hDC, TEXT("Res\\setting_easy_on.png"));
+		g_pNormalOnImage = new Image(hDC, TEXT("Res\\setting_normal_on.png"));
+		g_pDifficultOnImage = new Image(hDC, TEXT("Res\\setting_hard_on.png"));
+		g_pEasyOffImage = new Image(hDC, TEXT("Res\\setting_easy_off.png"));
+		g_pNormalOffImage = new Image(hDC, TEXT("Res\\setting_normal_off.png"));
+		g_pDifficultOffImage = new Image(hDC, TEXT("Res\\setting_hard_off.png"));
 	}
 
 	Sprite* pSprite;
@@ -143,6 +162,79 @@ void NewSeeting() {
 	pSprite = new Sprite(g_pCancelImage);
 	pSprite->SetPosition((int)(position.right - 0.1 * (position.right - position.left)), (int)(position.top + 0.05 * (position.bottom - position.top)));
 	g_pGame->AddSprite(pSprite);
+
+	if(g_bBGMOn == true)
+		pSprite = new Sprite(g_pBGMOnImage);
+	else
+		pSprite = new Sprite(g_pBGMOffImage);
+	pSprite->SetPosition(475,165);
+	g_pGame->AddSprite(pSprite);
+
+	if (g_bSoundOn == true)
+		pSprite = new Sprite(g_pSoundOnImage);
+	else
+		pSprite = new Sprite(g_pSoundOffImage);
+	pSprite->SetPosition(475, 245);
+	g_pGame->AddSprite(pSprite);
+
+
+	switch (g_sDifficulty)
+	{
+	case 1:
+		pEasySprite = new Sprite(g_pEasyOnImage);
+		pEasySprite->SetPosition(475, 325);
+		g_pGame->AddSprite(pEasySprite);
+
+		pNormalSprite = new Sprite(g_pNormalOffImage);
+		pNormalSprite->SetPosition(545, 325);
+		g_pGame->AddSprite(pNormalSprite);
+
+		pDifficultSprite = new Sprite(g_pDifficultOffImage);
+		pDifficultSprite->SetPosition(615, 325);
+		g_pGame->AddSprite(pDifficultSprite);
+		break;
+	case 2:
+		pEasySprite = new Sprite(g_pEasyOffImage);
+		pEasySprite->SetPosition(475, 325);
+		g_pGame->AddSprite(pEasySprite);
+
+		pNormalSprite = new Sprite(g_pNormalOnImage);
+		pNormalSprite->SetPosition(545, 325);
+		g_pGame->AddSprite(pNormalSprite);
+
+		pDifficultSprite = new Sprite(g_pDifficultOffImage);
+		pDifficultSprite->SetPosition(615, 325);
+		g_pGame->AddSprite(pDifficultSprite);
+		break;
+	default:
+		pEasySprite = new Sprite(g_pEasyOffImage);
+		pEasySprite->SetPosition(475, 325);
+		g_pGame->AddSprite(pEasySprite);
+
+		pNormalSprite = new Sprite(g_pNormalOffImage);
+		pNormalSprite->SetPosition(545, 325);
+		g_pGame->AddSprite(pNormalSprite);
+
+		pDifficultSprite = new Sprite(g_pDifficultOnImage);
+		pDifficultSprite->SetPosition(615, 325);
+		g_pGame->AddSprite(pDifficultSprite);
+		break;
+	}
+
+/*
+	pEasySprite = new Sprite(g_pEasyOffImage);
+	pEasySprite->SetPosition(475, 325);
+	g_pGame->AddSprite(pEasySprite);
+
+	pNormalSprite = new Sprite(g_pNormalOnImage);
+	pNormalSprite->SetPosition(545, 325);
+	g_pGame->AddSprite(pNormalSprite);
+
+	pDifficultSprite = new Sprite(g_pDifficultOffImage);
+	pDifficultSprite->SetPosition(615, 325);
+	g_pGame->AddSprite(pDifficultSprite)*/;
+
+
 }
 void NewRank() {
 	// Clear the sprites
@@ -368,11 +460,16 @@ void GameEnd()
 
   // 游戏设置界面
   delete			g_pSettingsBackgroundImage;
-  delete			g_pBGMImage;
-  delete			g_pSoundEffectImage;
-  delete			g_pDifficultyImage;
-  delete			g_pCheckboxImage;
-  delete			g_pTickImage;
+  delete			g_pBGMOnImage;
+  delete			g_pBGMOffImage;
+  delete			g_pSoundOnImage;
+  delete			g_pSoundOffImage;
+  delete			g_pEasyOnImage;
+  delete			g_pNormalOnImage;
+  delete			g_pDifficultOnImage;
+  delete			g_pEasyOffImage;
+  delete			g_pNormalOffImage;
+  delete			g_pDifficultOffImage;
   // 游戏帮助界面
   delete			g_pHelpBackgroundImage;
   // 游戏排行榜界面
@@ -391,7 +488,7 @@ void GameEnd()
 void GameActivate(HWND hWindow)
 {
   // Resume the background music
-  if (g_bMusicOn == true)
+  if (g_bMusicOn == true||g_bBGMOn == true)
 	  g_pGame->PlayMIDISong(TEXT(""), FALSE);
 }
 
@@ -428,9 +525,9 @@ void GamePaint(HDC hDC)
 		LOGFONT lonfont;
 		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
 		lonfont.lfHeight = 48;  
-		lonfont.lfWidth = 40;
+		lonfont.lfWidth = 37;
 		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
-		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("宋体"));
+		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
 		HFONT hfont = CreateFontIndirect(&lonfont);
 
 		TCHAR szText[64];
@@ -439,7 +536,7 @@ void GamePaint(HDC hDC)
 
 		SelectObject(hDC, hfont);
 		SetBkMode(hDC, TRANSPARENT);
-		SetTextColor(hDC, RGB(255, 255, 255));
+		SetTextColor(hDC, RGB(26, 26, 26));
 		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 		DeleteObject(hfont);
 
@@ -478,9 +575,9 @@ void GamePaint(HDC hDC)
 		LOGFONT lonfont;
 		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
 		lonfont.lfHeight = 54; 
-		lonfont.lfWidth = 45;
+		lonfont.lfWidth = 40;
 		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
-		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("宋体"));
+		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
 		HFONT hfont = CreateFontIndirect(&lonfont);
 
 		TCHAR szText[64];
@@ -489,7 +586,7 @@ void GamePaint(HDC hDC)
 
 		SelectObject(hDC, hfont);
 		SetBkMode(hDC, TRANSPARENT);
-		SetTextColor(hDC, RGB(255, 255, 255));
+		SetTextColor(hDC, RGB(252, 109, 139));
 		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);		
 		DeleteObject(hfont);
 	}
@@ -586,7 +683,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			//此处添加点击图标的音效			
-
+			PlayMouseClickSound();
 			if (pSprite->GetImage() == g_pGameImage) {
 				g_uiState = UI_GAME;
 
@@ -596,16 +693,18 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				NewGame();
 			}
 			else if (pSprite->GetImage() == g_pSettingsImage) {
+				PlayMouseClickSound();
 				g_uiState = UI_SETTINGS;
 
 				//跳转界面 需先清理开始界面的五个按钮的资源
 				RemoveOption();
 				//加载新界面需要的资源
-				NewSeeting();
+				NewSetting();
 				
 
 			}
 			else if (pSprite->GetImage() == g_pHelpImage) {
+				PlayMouseClickSound();
 				g_uiState = UI_HELP;
 
 				//跳转界面 需先清理开始界面的五个按钮的资源
@@ -615,6 +714,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 
 			}
 			else if (pSprite->GetImage() == g_pRankImage) {
+				PlayMouseClickSound();
 				g_uiState = UI_RANK;
 
 				//跳转界面 需先清理开始界面的五个按钮的资源
@@ -623,6 +723,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				NewRank();
 			}
 			else if (pSprite->GetImage() == g_pExitImage) {
+				PlayMouseClickSound();
 				g_uiState = UI_EXIT;
 				
 				//由开始界面退出程序 清理开始界面的五个按钮的资源
@@ -631,6 +732,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				g_pGame->Quit();
 			}
 			else if (pSprite->GetImage() == g_pContinueImage) {
+				PlayMouseClickSound();
 				//——————————————————-读取保存文档的xml中的	g_gaState的值
 
 				GAMESTATE g_gaState_value;
@@ -662,6 +764,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_OPTION;
 
@@ -673,6 +776,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_OPTION;
 
@@ -684,10 +788,67 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_OPTION;
 
 				NewOption();
+			}
+			else if (pSprite->GetImage() == g_pBGMOnImage) {
+				PlayMouseClickSound();
+				g_bBGMOn = false;
+				g_bMusicOn = false;
+
+				pSprite->SetImage(g_pBGMOffImage);
+
+				// Close the MIDI player for the background music
+				g_pGame->PauseMIDISong();
+			}
+			else if (pSprite->GetImage() == g_pBGMOffImage) {
+				PlayMouseClickSound();
+				g_bBGMOn = true;
+				g_bMusicOn = true;
+
+				pSprite->SetImage(g_pBGMOnImage);
+
+				// Open the MIDI player for the background music
+				g_pGame->PlayMIDISong();
+			}
+			else if (pSprite->GetImage() == g_pSoundOnImage) {
+				PlayMouseClickSound();
+				g_bSoundOn = false;
+				g_bMusicOn = false;
+
+				pSprite->SetImage(g_pSoundOffImage);
+
+			}
+			else if (pSprite->GetImage() == g_pSoundOffImage) {
+				PlayMouseClickSound();
+				g_bSoundOn = true;
+				g_bMusicOn = true;
+
+				pSprite->SetImage(g_pSoundOnImage);
+			}
+			else if (pSprite->GetImage() == g_pEasyOffImage) {
+				PlayMouseClickSound();
+				pSprite->SetImage(g_pEasyOnImage);
+				pNormalSprite->SetImage(g_pNormalOffImage);
+				pDifficultSprite->SetImage(g_pDifficultOffImage);
+				g_sDifficulty = 1;
+			}
+			else if (pSprite->GetImage() == g_pNormalOffImage) {
+				PlayMouseClickSound();
+				pSprite->SetImage(g_pNormalOnImage);
+				pEasySprite->SetImage(g_pEasyOffImage);
+				pDifficultSprite->SetImage(g_pDifficultOffImage);
+				g_sDifficulty = 2;
+			}
+			else if (pSprite->GetImage() == g_pDifficultOffImage) {
+				PlayMouseClickSound();
+				pSprite->SetImage(g_pDifficultOnImage);
+				pNormalSprite->SetImage(g_pNormalOffImage);
+				pEasySprite->SetImage(g_pEasyOffImage);
+				g_sDifficulty = 3;
 			}
 		}
 	}
@@ -695,6 +856,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_OPTION;
 
@@ -707,7 +869,10 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pMusicOnImage) {
+				PlayMouseClickSound();
 				g_bMusicOn = false;
+				g_bBGMOn = false;
+				g_bSoundOn = false;
 
 				// 更换图片
 				pSprite->SetImage(g_pMusicOffImage);
@@ -716,7 +881,10 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				g_pGame->PauseMIDISong();
 			}
 			else if (pSprite->GetImage() == g_pMusicOffImage) {
+				PlayMouseClickSound();
 				g_bMusicOn = true;
+				g_bBGMOn = true;
+				g_bSoundOn = true;
 
 				// 更换图片
 				pSprite->SetImage(g_pMusicOnImage);
@@ -725,6 +893,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				g_pGame->PlayMIDISong();
 			}
 			else if (pSprite->GetImage() == g_pPauseImage) {
+				PlayMouseClickSound();
 				// 暂停界面
 				g_uiState = UI_PAUSE;
 
@@ -737,6 +906,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pGameAgainImage) {
+				PlayMouseClickSound();
 				// 重新开始
 				g_uiState = UI_GAME;
 				g_gaState = GA_NEW;
@@ -744,12 +914,14 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				NewGame();
 			}
 			else if (pSprite->GetImage() == g_pGameMainImage) {
+				PlayMouseClickSound();
 				// 主页
 				g_uiState = UI_OPTION;
 				
 				NewOption();
 			}
 			else if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_OPTION;
 				
@@ -762,6 +934,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
 			if (pSprite->GetImage() == g_pGameAgainImage) {
+				PlayMouseClickSound();
 				// 重新开始
 				g_uiState = UI_GAME;
 				g_gaState = GA_NEW;
@@ -769,6 +942,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				NewGame();
 			}
 			else if (pSprite->GetImage() == g_pGameContinueImage) {
+				PlayMouseClickSound();
 				// 继续
 				g_uiState = UI_GAME;
 				g_gaState = GA_CONTINUE;
@@ -778,12 +952,14 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 					NewOption();
 			}
 			else if (pSprite->GetImage() == g_pGameMainImage) {
+				PlayMouseClickSound();
 				// 主页
 				g_uiState = UI_OPTION;
 
 				NewOption();
 			}
 			else if (pSprite->GetImage() == g_pCancelImage) {
+				PlayMouseClickSound();
 				// 红叉
 				g_uiState = UI_GAME;
 				g_gaState = GA_CONTINUE;
@@ -817,7 +993,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
   if (pHitter == g_pGirlImage && pHittee == g_pAppleImage)
   {
     // Play the small explosion sound
-	if(g_bMusicOn == true)
+	if(g_bMusicOn == true||g_bSoundOn == true)
 		PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
 			SND_RESOURCE);
 
@@ -833,8 +1009,8 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
   if (pHitter == g_pGirlImage && pHittee == g_pStoneImage)
   {
     // Play the large explosion sound
-	if (g_bMusicOn == true)
-		PlaySound((LPCSTR)IDW_LGEXPLODE, g_hInstance, SND_ASYNC |
+	if (g_bMusicOn == true || g_bSoundOn == true)
+		PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
 			SND_RESOURCE);
 
     // Kill the stone sprite
@@ -847,7 +1023,7 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     if (--g_iNumLives == 0)
     {
       // Play the game over sound
-	  if (g_bMusicOn == true)
+	  if (g_bMusicOn == true || g_bSoundOn == true)
 		PlaySound((LPCSTR)IDW_GAMEOVER, g_hInstance, SND_ASYNC |
 			SND_RESOURCE);
       g_bGameOver = TRUE;
@@ -865,16 +1041,16 @@ void SpriteDying(Sprite* pSpriteDying)
   if (pSpriteDying->GetImage() == g_pAppleImage)
   {
     // Play sound
-	if (g_bMusicOn == true)
-		PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
+	if (g_bMusicOn == true || g_bSoundOn == true)
+		PlaySound((LPCSTR)IDW_MISSILE, g_hInstance, SND_ASYNC |
 			SND_RESOURCE | SND_NOSTOP);
   }
   // See if a stone prite is dying
   else if (pSpriteDying->GetImage() == g_pStoneImage)
   {
 	  // Play sound
-	  if (g_bMusicOn == true)
-		  PlaySound((LPCSTR)IDW_SMEXPLODE, g_hInstance, SND_ASYNC |
+	  if (g_bMusicOn == true|| g_bSoundOn == true)
+		  PlaySound((LPCSTR)IDW_MISSILE, g_hInstance, SND_ASYNC |
 			  SND_RESOURCE | SND_NOSTOP);
   }
 }
@@ -926,7 +1102,7 @@ void NewGame()
   g_pGame->AddSprite(pPauseSprite);
 
   Sprite* pMusicSprite;
-  if (g_bMusicOn == true)
+  if (g_bMusicOn == true|| g_bBGMOn == true)
 	  pMusicSprite = new Sprite(g_pMusicOnImage);
   else
 	  pMusicSprite = new Sprite(g_pMusicOffImage);
@@ -943,11 +1119,24 @@ void NewGame()
   g_iFireInputDelay = 0;
   g_iScore = 0;
   g_iNumLives = 3;
-  g_iDifficulty = 80;
+
+  switch (g_sDifficulty)
+  {
+  case 1:
+	  g_iDifficulty = 300;
+	  break;
+  case 2:
+	  g_iDifficulty = 170;
+	  break;
+  default:
+	  g_iDifficulty = 20;
+	  break;
+  }
+
   g_bGameOver = FALSE;
 
   // Play the background music
-  if (g_bMusicOn == true)
+  if (g_bMusicOn == true||g_bBGMOn == true)
 	g_pGame->PlayMIDISong();
 }
 
@@ -977,7 +1166,7 @@ void AddFalls()
     pSprite->SetNumFrames(8);
     pSprite->SetPosition(rand() % g_iWidth, rand() % 10);
     pSprite->SetVelocity(0, (rand() % 5) + 5);
-	pSprite->SetDieDelay(50);
+	pSprite->SetDieDelay(0);
 	pSprite->SetCollidable(TRUE);
     break;
   }
@@ -985,4 +1174,10 @@ void AddFalls()
   // Add the sprite
   if(pSprite != NULL)
 	g_pGame->AddSprite(pSprite);
+}
+
+void PlayMouseClickSound() {
+	if (g_bMusicOn == true || g_bSoundOn == true)
+	PlaySound((LPCSTR)IDW_CLICK, g_hInstance, SND_ASYNC |
+		SND_RESOURCE | SND_NOSTOP);
 }

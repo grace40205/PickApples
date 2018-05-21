@@ -36,3 +36,4 @@
 #define IDW_SMEXPLODE         3004
 #define IDW_LGEXPLODE         3005
 #define IDW_GAMEOVER          3006
+#define IDW_CLICK             3007
