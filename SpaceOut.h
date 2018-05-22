@@ -136,4 +136,4 @@ bool GetNodePointerByName(TiXmlElement *pRootEle, const std::string& strNodeName
 bool Modify(const char *XmlFile, const std::string strNodeName, const char *strText);
 string getdata(const char *XmlFile, const std::string strNodeName);
 void DrawNumber(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, int number);
-void DrawString(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, string str);
+int StringToInt(string str);
