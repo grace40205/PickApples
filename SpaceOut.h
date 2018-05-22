@@ -16,6 +16,8 @@
 #include "Sprite.h"
 #include "Background.h"
 #include "AlienSprite.h"
+#include "tinyxml.h"
+#include "tinystr.h"
 
 //-----------------------------------------------------------------
 // Custom Data Types
@@ -35,6 +37,10 @@ const UISTATE	UI_OPTION		= 0x0000L,
 				UI_PAUSE        = 0X0006L, //结束界面
 				UI_EXIT			= 0X0007L,
 				UI_CONTINUE		= 0X0008L;
+
+//xml文件路径
+const char *LATEST_RECORD_XMLPATH = "C:\\Users\\向妍霏\\Desktop\\PickApple\\Latest_Record.xml";
+const char *BEST_RECORD_XMLPATH = "C:\\Users\\向妍霏\\Desktop\\PickApple\\Best_Record.xml";
 
 
 //-----------------------------------------------------------------
@@ -125,3 +131,9 @@ void RemoveOption();
 bool RemovePause();
 void AddFalls();
 void PlayMouseClickSound();
+
+bool GetNodePointerByName(TiXmlElement *pRootEle, const std::string& strNodeName, TiXmlElement* &Node);
+bool Modify(const char *XmlFile, const std::string strNodeName, const char *strText);
+string getdata(const char *XmlFile, const std::string strNodeName);
+void DrawNumber(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, int number);
+void DrawString(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, string str);
