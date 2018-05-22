@@ -39,8 +39,8 @@ const UISTATE	UI_OPTION		= 0x0000L,
 				UI_CONTINUE		= 0X0008L;
 
 //xml文件路径
-const char *LATEST_RECORD_XMLPATH = "C:\\Users\\向妍霏\\Desktop\\PickApple\\Latest_Record.xml";
-const char *BEST_RECORD_XMLPATH = "C:\\Users\\向妍霏\\Desktop\\PickApple\\Best_Record.xml";
+const char *LATEST_RECORD_XMLPATH = "Latest_Record.xml";
+const char *BEST_RECORD_XMLPATH = "Best_Record.xml";
 
 
 //-----------------------------------------------------------------
