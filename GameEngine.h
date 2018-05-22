@@ -41,6 +41,7 @@ void GameStart(HWND hWindow);
 void GameEnd();
 void GameActivate(HWND hWindow);
 void GameDeactivate(HWND hWindow);
+void DrawNumber(const HDC &hDC);
 void GamePaint(HDC hDC);
 void GameCycle();
 void HandleKeys();

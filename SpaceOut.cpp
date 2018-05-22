@@ -290,7 +290,7 @@ void NewContinue() {
 	// Clear the sprites
 	g_pGame->CleanupSprites();
 		
-
+	
 	if (g_pCancelImage == NULL || g_pContinueHintImage == NULL)
 	{
 		// Obtain a device context for repainting the game
@@ -497,6 +497,71 @@ void GameDeactivate(HWND hWindow)
   // Pause the background music
   g_pGame->PauseMIDISong();
 }
+void DrawString(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, string str)
+{
+	LOGFONT lonfont;
+	GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
+	/*lonfont.lfHeight = 48;
+	lonfont.lfWidth = 37;*/
+	lonfont.lfHeight = height;
+	lonfont.lfWidth = width;
+	lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
+	wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
+	HFONT hfont = CreateFontIndirect(&lonfont);
+
+	TCHAR szText[64];
+	wsprintf(szText, "%s", str);
+
+	SelectObject(hDC, hfont);
+	SetBkMode(hDC, TRANSPARENT);
+	SetTextColor(hDC, RGB(26, 26, 26));
+	DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DeleteObject(hfont);
+}
+
+void DrawNumber(const HDC &hDC,RECT& rect, LONG32 height, LONG32 width, int number)
+{
+	LOGFONT lonfont;
+	GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
+	/*lonfont.lfHeight = 48;
+	lonfont.lfWidth = 37;*/
+	lonfont.lfHeight = height;
+	lonfont.lfWidth = width;
+	lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
+	wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
+	HFONT hfont = CreateFontIndirect(&lonfont);
+
+	TCHAR szText[64];
+	wsprintf(szText, "%d", number);
+
+	SelectObject(hDC, hfont);
+	SetBkMode(hDC, TRANSPARENT);
+	SetTextColor(hDC, RGB(26, 26, 26));
+	DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DeleteObject(hfont);
+}
+
+void DrawNumber1(const HDC &hDC, RECT& rect, LONG32 height, LONG32 width, int number)
+{
+	LOGFONT lonfont;
+	GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
+	/*lonfont.lfHeight = 48;
+	lonfont.lfWidth = 37;*/
+	lonfont.lfHeight = height;
+	lonfont.lfWidth = width;
+	lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
+	wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
+	HFONT hfont = CreateFontIndirect(&lonfont);
+
+	TCHAR szText[64];
+	wsprintf(szText, "%d", number);
+
+	SelectObject(hDC, hfont);
+	SetBkMode(hDC, TRANSPARENT);
+	SetTextColor(hDC, RGB(26, 26, 26));
+	DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+	DeleteObject(hfont);
+}
 
 void GamePaint(HDC hDC)
 {
@@ -522,23 +587,8 @@ void GamePaint(HDC hDC)
 		g_pGame->DrawSprites(hDC);
 
 		// Draw the score
-		LOGFONT lonfont;
-		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
-		lonfont.lfHeight = 48;  
-		lonfont.lfWidth = 37;
-		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
-		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
-		HFONT hfont = CreateFontIndirect(&lonfont);
-
-		TCHAR szText[64];
 		RECT  rect = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.0), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
-		wsprintf(szText, "%d", g_iScore);
-
-		SelectObject(hDC, hfont);
-		SetBkMode(hDC, TRANSPARENT);
-		SetTextColor(hDC, RGB(26, 26, 26));
-		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-		DeleteObject(hfont);
+		DrawNumber(hDC,rect,48,37,g_iScore);
 
 		// Draw the number of remaining lives (cars)
 		for (int i = 0; i < g_iNumLives; i++)
@@ -562,7 +612,54 @@ void GamePaint(HDC hDC)
 		g_pBackground = new Background(g_pOpitonBackgroundImage);
 		g_pBackground->Draw(hDC);
 		g_pGame->DrawSprites(hDC);
+
+		//从BestRecord.xml里获取三个难度的数据
+		string BestScore_easy_str = getdata(BEST_RECORD_XMLPATH, "best_easy");
+		char bestscore_easy_char[20];
+		strcpy(bestscore_easy_char, BestScore_easy_str.c_str());
+		int BestScore_easy = atoi(bestscore_easy_char);
+
+		string BestScore_medium_str = getdata(BEST_RECORD_XMLPATH, "best_medium");
+		char bestscore_medium_char[20];
+		strcpy(bestscore_medium_char, BestScore_medium_str.c_str());
+		int BestScore_medium = atoi(bestscore_medium_char);
+
+		string BestScore_hard_str = getdata(BEST_RECORD_XMLPATH, "best_hard");
+		char bestscore_hard_char[20];
+		strcpy(bestscore_hard_char, BestScore_hard_str.c_str());
+		int BestScore_hard = atoi(bestscore_hard_char);
+
+
+		/*string last_score_str = getdata(LATEST_RECORD_XMLPATH, "score");
+		char last_score_char[20];
+		strcpy(last_score_char, last_score_str.c_str());
+		int last_score_num = atoi(last_score_char);
+		g_iScore = last_score_num;*/
+
+
+	/*	string BestScore_medium = getdata(BEST_RECORD_XMLPATH, "best_medium");
+		string BestScore_hard = getdata(BEST_RECORD_XMLPATH, "best_hard");*/
+
+		//在排行榜上绘制（显示）数据
+		RECT  rect1 = { (int)(g_iWidth * 0.85) , (int)(g_iHeight * 0.84), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		DrawNumber(hDC, rect1, 48, 37, BestScore_easy);
+
+		RECT  rect2 = { (int)(g_iWidth * 0.85) , (int)(g_iHeight * 1.08), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		DrawNumber(hDC, rect2, 48, 37, BestScore_medium);
+
+		RECT  rect3 = { (int)(g_iWidth * 0.85) , (int)(g_iHeight * 1.32), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		DrawNumber(hDC, rect3, 48, 37, BestScore_hard);
+
+		//RECT  rect4 = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.0), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		//DrawString(hDC, rect4, 48, 37, BestScore_easy);
+
+		//RECT  rect5 = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.0), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		//DrawString(hDC, rect5, 48, 37, BestScore_medium);
+
+		//RECT  rect6 = { (int)(g_iWidth * 0.1) , (int)(g_iHeight * 0.0), (int)(g_iWidth * 0.2), (int)(g_iHeight * 0.1) };
+		//DrawString(hDC, rect6, 48, 37, BestScore_hard);
 	}
+
 	else if (g_uiState == UI_END || g_uiState == UI_PAUSE)
 	{
 		g_pBackground = new Background(g_pGameBackgroundImage);
@@ -571,24 +668,9 @@ void GamePaint(HDC hDC)
 		// Draw the sprites
 		g_pGame->DrawSprites(hDC);
 
-		// Draw the score
-		LOGFONT lonfont;
-		GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lonfont);
-		lonfont.lfHeight = 54; 
-		lonfont.lfWidth = 40;
-		lonfont.lfCharSet = GB2312_CHARSET;//国标2312  
-		wsprintf(lonfont.lfFaceName, TEXT("%s"), TEXT("黑体"));
-		HFONT hfont = CreateFontIndirect(&lonfont);
-
-		TCHAR szText[64];
+		
 		RECT  rect = { (int)(g_iWidth * 0.4) , (int)(g_iHeight * 0.38), (int)(g_iWidth * 0.6), (int)(g_iHeight * 0.5) };
-		wsprintf(szText, "%d", g_iScore);
-
-		SelectObject(hDC, hfont);
-		SetBkMode(hDC, TRANSPARENT);
-		SetTextColor(hDC, RGB(252, 109, 139));
-		DrawText(hDC, szText, -1, &rect, DT_SINGLELINE | DT_CENTER | DT_VCENTER);		
-		DeleteObject(hfont);
+		DrawNumber(hDC, rect, 48, 37, g_iScore);
 	}
 	else if (g_uiState == UI_CONTINUE) {
 		g_pBackground = new Background(g_pGameBackgroundImage);
@@ -654,7 +736,7 @@ void HandleKeys()
   
   if (g_uiState == UI_GAME && !g_bGameOver)
   {
-    // Move the car based upon left/right key presses
+    // Move the girl based upon left/right key presses
     POINT ptVelocity = g_pGirlSprite->GetVelocity();
     if (GetAsyncKeyState(VK_LEFT) < 0)
     {
@@ -735,24 +817,43 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 				PlayMouseClickSound();
 				//——————————————————-读取保存文档的xml中的	g_gaState的值
 
-				GAMESTATE g_gaState_value;
-				g_gaState_value = GA_CONTINUE;
-				if (g_gaState_value != GA_CONTINUE) {
-					
+				//有记录时，开始游戏
+				if (getdata(LATEST_RECORD_XMLPATH, "difficulty")!="0")
+				{	
 					//设置相关资源
-					//......
+					NewGame();
 
+					//读取上次游戏数据
+					//string转int
+					string last_score_str = getdata(LATEST_RECORD_XMLPATH, "score");
+					char last_score_char[20];
+					strcpy(last_score_char, last_score_str.c_str());
+					int last_score_num = atoi(last_score_char);
+					g_iScore = last_score_num;
+
+					string last_diff_str = getdata(LATEST_RECORD_XMLPATH, "difficulty");
+					char last_diff_char[20];
+					strcpy(last_diff_char, last_diff_str.c_str());
+					int last_diff_num = atoi(last_diff_char);
+					g_sDifficulty = last_diff_num;
+
+					string last_lives_str = getdata(LATEST_RECORD_XMLPATH, "lives");
+					char last_lives_char[20];
+					strcpy(last_lives_char, last_lives_str.c_str());
+					int last_lives_num = atoi(last_lives_char);
+					g_iNumLives = last_lives_num;
 
 					//进入游戏
 					g_uiState = UI_GAME;
 
 				}
+				//没有记录时，提示暂无记录
 				else {
 					g_uiState = UI_CONTINUE;
 					
-				//跳转界面 需先清理开始界面的五个按钮的资源
-				RemoveOption();
-				//加载新界面需要的资源
+					//跳转界面 需先清理开始界面的五个按钮的资源
+					RemoveOption();
+					//加载新界面需要的资源
 					NewContinue();
 				}
 			}
@@ -775,6 +876,7 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 	else if (g_uiState == UI_CONTINUE && bLeft) {
 		Sprite* pSprite;
 		if ((pSprite = g_pGame->IsPointInSprite(x, y)) != NULL) {
+
 			if (pSprite->GetImage() == g_pCancelImage) {
 				PlayMouseClickSound();
 				// 红叉
@@ -953,9 +1055,22 @@ void MouseButtonDown(int x, int y, BOOL bLeft)
 			}
 			else if (pSprite->GetImage() == g_pGameMainImage) {
 				PlayMouseClickSound();
-				// 主页
+				// 返回主页
 				g_uiState = UI_OPTION;
-
+				
+				//存档到Latest_Record.xml中，保存最近一次记录
+				//int转换为char*
+				char *num_score= (char*)malloc(100 * sizeof(char));
+				itoa(g_iScore, num_score, 10);
+				char *num_diff= (char*)malloc(100 * sizeof(char));
+				itoa(g_sDifficulty, num_diff, 10);
+				char *num_lives = (char*)malloc(100 * sizeof(char));
+				itoa(g_iNumLives, num_lives, 10);
+		
+				Modify(LATEST_RECORD_XMLPATH, "score", num_score);
+				Modify(LATEST_RECORD_XMLPATH, "difficulty", num_diff);
+				Modify(LATEST_RECORD_XMLPATH, "lives", num_lives);
+			
 				NewOption();
 			}
 			else if (pSprite->GetImage() == g_pCancelImage) {
@@ -1016,12 +1131,60 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
     // Kill the stone sprite
 	pSpriteHittee->Kill();
 
-    // Move the car back to the start
+    // Move the girl back to the start
     g_pGirlSprite->SetPosition((int)g_iWidth * 0.3, (int)(g_iHeight - g_pGirlImage->GetHeight()));
 
     // See if the game is over
     if (--g_iNumLives == 0)
     {
+		//重置lastRecord记录为0
+		Modify(LATEST_RECORD_XMLPATH, "score", "0");
+		Modify(LATEST_RECORD_XMLPATH, "difficulty", "0");
+		Modify(LATEST_RECORD_XMLPATH, "lives", "0");
+
+		//比较最高得分，存档
+		//string转int
+		string score_easy_str = getdata(BEST_RECORD_XMLPATH, "best_easy");
+		char score_easy_char[20];
+		strcpy(score_easy_char, score_easy_str.c_str());
+		int score_easy_num = atoi(score_easy_char);
+
+		string score_medium_str = getdata(BEST_RECORD_XMLPATH, "best_medium");
+		char score_medium_char[20];
+		strcpy(score_medium_char, score_medium_str.c_str());
+		int score_medium_num = atoi(score_medium_char);
+		
+		string score_hard_str = getdata(BEST_RECORD_XMLPATH, "best_hard");
+		char score_hard_char[20];
+		strcpy(score_hard_char, score_hard_str.c_str());
+		int score_hard_num = atoi(score_hard_char);
+
+		char *score = (char*)malloc(100 * sizeof(char));
+		itoa(g_iScore, score, 10);
+
+		switch(g_sDifficulty) {
+			case 1:
+				if(g_iScore>score_easy_num){
+					Modify(BEST_RECORD_XMLPATH, "best_easy", score);
+				}
+				break;
+			case 2:
+				if (g_iScore > score_medium_num) {
+					Modify(BEST_RECORD_XMLPATH, "best_medium", score);
+				}
+				break;
+			case 3:
+				if (g_iScore > score_hard_num) {
+					Modify(BEST_RECORD_XMLPATH, "best_hard", score);
+				}
+				break;
+			default:
+				Modify(BEST_RECORD_XMLPATH, "best_easy", "0");
+				Modify(BEST_RECORD_XMLPATH, "best_medium", "0");
+				Modify(BEST_RECORD_XMLPATH, "best_hard", "0");
+				break;
+		}
+
       // Play the game over sound
 	  if (g_bMusicOn == true || g_bSoundOn == true)
 		PlaySound((LPCSTR)IDW_GAMEOVER, g_hInstance, SND_ASYNC |
@@ -1029,6 +1192,8 @@ BOOL SpriteCollision(Sprite* pSpriteHitter, Sprite* pSpriteHittee)
       g_bGameOver = TRUE;
 	  g_uiState = UI_END;
 	  g_gaState = GA_DIE;
+
+
     }
   }
 
@@ -1181,3 +1346,76 @@ void PlayMouseClickSound() {
 	PlaySound((LPCSTR)IDW_CLICK, g_hInstance, SND_ASYNC |
 		SND_RESOURCE | SND_NOSTOP);
 }
+
+//通过根节点和节点名获取节点指针。
+//param pRootEle   xml文件的根节点。
+//param strNodeName  要查询的节点名
+//param Node      需要查询的节点指针
+//return 是否找到。true为找到相应节点指针，false表示没有找到相应节点指针。
+bool GetNodePointerByName(TiXmlElement *pRootEle, const std::string& strNodeName, TiXmlElement* &Node)
+{
+	if (strNodeName == pRootEle->Value()) {
+		Node = pRootEle;
+		return true;
+	}
+
+	TiXmlElement *pEle = pRootEle;
+	for (pEle = pRootEle->FirstChildElement(); pEle; pEle = pEle->NextSiblingElement()) {
+		if (GetNodePointerByName(pEle, strNodeName, Node))
+			return true;
+	}
+	return false;
+}
+
+//修改xml数据
+//param XmlFile 
+//param strNodeName
+//param strText
+bool Modify(const char *XmlFile, const std::string strNodeName, const char* strText)
+{
+	TiXmlDocument *pDoc = new TiXmlDocument();
+	if (NULL == pDoc)
+	{
+		return false;
+	}
+	pDoc->LoadFile(XmlFile, TIXML_ENCODING_UTF8);
+	TiXmlElement *pRootEle = pDoc->RootElement();
+	if (NULL == pRootEle) {
+		return false;
+	}
+
+	TiXmlElement *pNode = NULL;
+	GetNodePointerByName(pRootEle, strNodeName, pNode);
+
+	if (NULL != pNode) {
+		pNode->Clear();
+		TiXmlText *pValue = new TiXmlText(strText);
+		pNode->LinkEndChild(pValue);
+		pDoc->SaveFile(XmlFile);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+string getdata(const char *XmlFile, const std::string strNodeName) {
+	TiXmlDocument *pDoc = new TiXmlDocument();
+	if (NULL == pDoc)
+	{
+		return false;
+	}
+	pDoc->LoadFile(XmlFile, TIXML_ENCODING_UTF8);
+	TiXmlElement *pRootEle = pDoc->RootElement();
+	if (NULL == pRootEle) {
+		return false;
+	}
+	TiXmlElement *pNode = NULL;
+	GetNodePointerByName(pRootEle, strNodeName, pNode);
+	if (NULL != pNode) {
+//		printf(pNode->FirstChild.GetText());
+		return pNode->GetText();
+		//return pNode->FirstChild.GetText();
+	}
+}
+
